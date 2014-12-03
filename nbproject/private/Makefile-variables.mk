@@ -5,3 +5,4 @@
 #
 # Debug configuration
 # Release configuration
+# Copy_of_Debug configuration

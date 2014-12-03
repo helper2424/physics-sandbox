@@ -4,7 +4,6 @@
 #include "Map.h"
 #include <fstream>
 #include <iostream>
-#include <execinfo.h>
 #include <signal.h>
 #include <stdlib.h>
 

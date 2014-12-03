@@ -55,11 +55,11 @@ static void Resize(int32 w, int32 h)
 static b2Vec2 ConvertScreenToWorld(int32 x, int32 y)
 {
         float32 convertCoeff = viewZoom * UnitToPixel;
-        
+
 	b2Vec2 p;
 	p.x = x/convertCoeff -2;
 	p.y = map->height + 2 - y/convertCoeff;
-        
+
 	return p;
 }
 
@@ -92,17 +92,17 @@ static void SimulationLoop()
 static void load_map(const char * path)
 {
         std::ifstream file(path);
-        
+
         if(!file)
         {
                 std::cout << "Undefined map data in " << path << "\n";
                 abort();
         }
-        
+
         file.seekg (0, file.end);
         int length = file.tellg();
         file.seekg (0, file.beg);
-        
+
         char * buffer = new char [length];
 
         std::cout << "Reading " << length << " characters... " << std::endl;
@@ -148,13 +148,13 @@ static void Keyboard(unsigned char key, int x, int y)
 		break;
 
 		// Press space to launch a bomb.
- 
+
 	case 'p':
 		settings.pause = !settings.pause;
 		break;
 
 		// Press [ to prev test.
-                        
+
 	default:
 		if (test)
 		{
@@ -268,7 +268,7 @@ static void Mouse(int32 button, int32 state, int32 x, int32 y)
 				test->MouseDown(p);
 			}
 		}
-		
+
 		if (state == GLUT_UP)
 		{
 			test->MouseUp(p);
@@ -277,7 +277,7 @@ static void Mouse(int32 button, int32 state, int32 x, int32 y)
 	else if (button == GLUT_RIGHT_BUTTON)
 	{
 		if (state == GLUT_DOWN)
-		{	
+		{
 			lastp = ConvertScreenToWorld(x, y);
 			rMouseDown = true;
 		}
@@ -298,7 +298,7 @@ void HidePanels()
 void ShowPlayerPanel(Player *player)
 {
         HidePanels();
-        
+
         player_radius->set_float_val(test->current_player->player_fixture->GetShape()->m_radius);
         player_mass->set_float_val(test->current_player->player_body->GetMass());
         player_move_force->set_float_val(test->current_player->move_impulse_force);
@@ -306,14 +306,15 @@ void ShowPlayerPanel(Player *player)
         player_player_kick_power->set_float_val(test->current_player->players_kick_power);
         player_bounce->set_float_val(test->current_player->player_fixture->GetRestitution());
         player_max_speed->set_float_val(test->current_player->max_speed);
-        
+	player_leg_length->set_float_val(test->current_player->leg_length);
+
         player_panel->enable();
 }
 
 void ShowBallPanel(BallBody* ball)
 {
         HidePanels();
-        
+
         ball_radius->set_float_val(test->current_ball->ball_fixture->GetShape()->m_radius);
 	ball_liner_dumping->set_float_val(test->current_ball->body->GetLinearDamping());
 	ball_angular_dumping->set_float_val(test->current_ball->body->GetAngularDamping());
@@ -331,14 +332,15 @@ static void UpdatePlayer(int)
                 test->current_player->move_impulse_force = player_move_force->get_float_val();
                 test->current_player->player_body->SetLinearDamping(player_liner_dumping->get_float_val());
                 test->current_player->players_kick_power = player_player_kick_power->get_float_val();
-                
+
                 b2MassData buf;
                 test->current_player->player_body->GetMassData(&buf);
                 buf.mass = player_mass->get_float_val();
                 test->current_player->player_body->SetMassData(&buf);
-                
+
                 test->current_player->player_fixture->SetRestitution(player_bounce->get_float_val());
                 test->current_player->max_speed = player_max_speed->get_float_val();
+		test->current_player->leg_length = player_leg_length->get_float_val();
         }
 }
 
@@ -350,7 +352,7 @@ static void UpdateBall(int)
                 test->current_ball->body->SetLinearDamping(ball_liner_dumping->get_float_val());
                 test->current_ball->body->SetAngularDamping(ball_angular_dumping->get_float_val());
                 test->current_ball->ball_fixture->SetRestitution(ball_bounce->get_float_val());
-               
+
                 b2MassData buf;
                 test->current_ball->body->GetMassData(&buf);
                 buf.mass = ball_mass->get_float_val();
@@ -362,7 +364,7 @@ static void MouseMotion(int32 x, int32 y)
 {
 	b2Vec2 p = ConvertScreenToWorld(x, y);
 	test->MouseMove(p);
-	
+
 	if (rMouseDown)
 	{
 		b2Vec2 diff = p - lastp;
@@ -407,12 +409,12 @@ static void Exit(int code)
 {
         if(map != nullptr)
                 delete map;
-        
+
         if(test != nullptr)
                 delete test;
-        
+
         std::cout << "Graceful end" << std::endl;
-        
+
 	// TODO: freeglut is not building on OSX
 #ifdef FREEGLUT
 	glutLeaveMainLoop();
@@ -430,7 +432,7 @@ void add_to_panel(GLUI_Panel* panel, GLUI_Spinner** spinner, const char * name, 
 {
         *spinner = glui->add_spinner_to_panel(panel, name, GLUI_SPINNER_FLOAT);
         (*spinner)->set_float_limits(min_limit, max_limit);
-        (*spinner)->set_speed(speed); 
+        (*spinner)->set_speed(speed);
 }
 
 int main(int argc, char** argv)
@@ -438,7 +440,7 @@ int main(int argc, char** argv)
         testIndex = 0;
         testSelection = 0;
         testCount = 0;
-        width = 800;
+        width = 1200;
         height = 600;
         framePeriod = 16;
         settingsHz = 60.0;
@@ -457,7 +459,7 @@ int main(int argc, char** argv)
 	//glutSetOption (GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 
 	glutDisplayFunc(SimulationLoop);
-	GLUI_Master.set_glutReshapeFunc(Resize);  
+	GLUI_Master.set_glutReshapeFunc(Resize);
 	GLUI_Master.set_glutKeyboardFunc(Keyboard);
 	GLUI_Master.set_glutSpecialFunc(KeyboardSpecial);
 	GLUI_Master.set_glutMouseFunc(Mouse);
@@ -468,7 +470,7 @@ int main(int argc, char** argv)
 
 	glutKeyboardUpFunc(KeyboardUp);
 
-	glui = GLUI_Master.create_glui_subwindow( mainWindow, 
+	glui = GLUI_Master.create_glui_subwindow( mainWindow,
 		GLUI_SUBWINDOW_RIGHT );
 
 	GLUI_Spinner* velocityIterationSpinner =
@@ -485,17 +487,13 @@ int main(int argc, char** argv)
 	hertzSpinner->set_float_limits(5.0f, 200.0f);
 
 	glui->add_checkbox("Sleep", &settings.enableSleep);
-	glui->add_checkbox("Warm Starting", &settings.enableWarmStarting);
-	glui->add_checkbox("Time of Impact", &settings.enableContinuous);
-	glui->add_checkbox("Sub-Stepping", &settings.enableSubStepping);
+	//glui->add_checkbox("Warm Starting", &settings.enableWarmStarting);
+	//glui->add_checkbox("Time of Impact", &settings.enableContinuous);
+	//glui->add_checkbox("Sub-Stepping", &settings.enableSubStepping);
 
 	//glui->add_separator();
 
 	GLUI_Panel* drawPanel =	glui->add_panel("Draw");
-	glui->add_checkbox_to_panel(drawPanel, "Shapes", &settings.drawShapes);
-	glui->add_checkbox_to_panel(drawPanel, "Joints", &settings.drawJoints);
-	glui->add_checkbox_to_panel(drawPanel, "AABBs", &settings.drawAABBs);
-	glui->add_checkbox_to_panel(drawPanel, "Contact Points", &settings.drawContactPoints);
         glui->add_checkbox_to_panel(drawPanel, "Moving with force", &settings.forceToMove);
         glui->add_checkbox_to_panel(drawPanel, "Limit velocity", &settings.useSpeedLimit);
 	//glui->add_checkbox_to_panel(drawPanel, "Contact Normals", &settings.drawContactNormals);
@@ -508,7 +506,7 @@ int main(int argc, char** argv)
 	glui->add_button("Pause", 0, Pause);
 	glui->add_button("Single Step", 0, SingleStep);
 	glui->add_button("Restart", 0, Restart);
-                
+
         //Player panel
         player_panel = glui->add_panel("Player", GLUI_PANEL_EMBOSSED);
         float val = 20;
@@ -519,9 +517,10 @@ int main(int argc, char** argv)
         add_to_panel(player_panel, &player_player_kick_power, "player kick power", val);
         add_to_panel(player_panel, &player_bounce,  "bounce", val);
         add_to_panel(player_panel, &player_max_speed, "max velocity", val);
-        
+	add_to_panel(player_panel, &player_leg_length, "leg length", val);
+
         glui->add_button_to_panel(player_panel, "Update", 0, UpdatePlayer);
-                
+
         //Ball panel
         ball_panel = glui->add_panel("Ball", GLUI_PANEL_EMBOSSED);
         float val1 = 1;
@@ -530,19 +529,19 @@ int main(int argc, char** argv)
         add_to_panel(ball_panel, &ball_liner_dumping, "velocity dumping", val);
         add_to_panel(ball_panel, &ball_bounce, "bounce",val);
         add_to_panel(ball_panel, &ball_angular_dumping, "angular dumping", val);
-        
+
         glui->add_button_to_panel(ball_panel, "Update", 0, UpdateBall);
-        
+
         HidePanels();
-        
+
         //-----------------------------
-        
+
 	glui->set_main_gfx_window( mainWindow );
 
 	// Use a timer to control the frame rate.
 	glutTimerFunc(framePeriod, Timer, 0);
 
 	glutMainLoop();
-        
+
 	return 0;
 }

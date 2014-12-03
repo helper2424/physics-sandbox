@@ -21,20 +21,20 @@ public:
         b2Filter ball_collide_filter;
 	b2Filter player_filter;
 	b2Filter pickable_filter;
-        b2Filter ball_filter;	
+        b2Filter ball_filter;
 	bool* keyStates = new bool[256];
 	bool wasKick;
-	
+
 	virtual void MouseDownCallback()
 	{
 		for(int i =0; i<256; i++)
 			keyStates[i] = false;
 	}
-	
+
 	void KeyboardUp (unsigned char key) {
-		keyStates[key] = false; // Set the state of the current key to not pressed  
-	}  
-	
+		keyStates[key] = false; // Set the state of the current key to not pressed
+	}
+
 	enum Category : uint16_t
 	{
 		CATEGORY_PLAYER_COLLIDE	= 0x0001,
@@ -43,15 +43,15 @@ public:
                 CATEGORY_BALL           = 0x0008,
 		CATEGORY_PICKABLE	= 0x00016
 	};
-	
+
 	typedef std::list<BallBody> balls_t;
-	
+
 	balls_t balls;
-	
+
 	RayCast(Map *map)
 	{
 		std::cout << "End creating objects" << std::endl;
-			
+
 		pickable_definition.active = true;
 		pickable_definition.allowSleep = true;
 		pickable_definition.angle = 0;
@@ -135,12 +135,12 @@ public:
 		pickable_filter.categoryBits = CATEGORY_PICKABLE;
 		pickable_filter.groupIndex = 0;
 		pickable_filter.maskBits = CATEGORY_PLAYER;
-	
+
 		b2Body *map_body = this->m_world->CreateBody(&map_definition);
 		m_groundBody = map_body;
-		
+
 		create_map_borders(*map, map_body);
-		
+
 		for (auto iter = map->shapes.begin(); iter != map->shapes.end(); ++iter)
 		{
 		    b2Fixture * fixture = map_body->CreateFixture(iter->shape, 0);
@@ -160,13 +160,13 @@ public:
 		    fixture->SetFilterData(ball_collide_filter);
 		    fixture->SetSensor(true);
 		}
-		
+
 		uint8_t balls_counter = 0;
 		for(auto iter = map->balls.begin(); iter != map->balls.end(); ++iter)
 		{
 			this->balls.emplace_back(m_world, (*iter), ball_definition, ball_filter, balls_counter++);
 		}
-			
+
 		for(auto i = 0; i<3; i++)
 		{
 			if(!map->respawn_points[i].empty())
@@ -178,14 +178,14 @@ public:
 					circle->m_p.x = 0;
 					circle->m_p.y = 0;
 					circle->m_radius = 1;
-					
+
 					b2Fixture * fixture = player_body->CreateFixture(circle, 1);
 					fixture->SetFilterData(player_filter);
 					Player *new_player = new Player();
 					new_player->player_body = player_body;
 					new_player->player_fixture = fixture;
 					player_body->SetUserData(new_player);
-					
+
 					b2MassData buf;
 					player_body->GetMassData(&buf);
 					buf.mass = 1;
@@ -193,7 +193,7 @@ public:
 				}
 		}
 	}
-	
+
 	void create_map_borders(const Map &map, b2Body* map_body)
 	{
 		b2ChainShape chain;
@@ -219,7 +219,20 @@ public:
 
 	void Keyboard(unsigned char key)
 	{
-		keyStates[key] = true; // Set the state of the current key to pressed  
+		keyStates[key] = true; // Set the state of the current key to pressed
+	}
+
+	void kick()
+	{
+		if(keyStates[' '])
+		{
+			b2CircleShape *player_shape = static_cast<b2CircleShape*>(this->current_player->player_fixture->GetShape());
+			b2Color kick_player_color;
+			kick_player_color.b = 0;
+			kick_player_color.r = 1;
+			kick_player_color.g = 0.3;
+			this->m_debugDraw.DrawCircle(this->current_player->player_body->GetPosition(), player_shape->m_radius + this->current_player->leg_length,kick_player_color);
+		}
 	}
 
 	void Step(Settings* settings)
@@ -227,14 +240,15 @@ public:
 		if(this->current_player != nullptr)
 		{
 			this->move(settings);
-		
+			this->kick();
+
 			b2Color current_player_color;
 			current_player_color.b = 1;
 			current_player_color.r = 1;
 			current_player_color.g = 1;
 			this->m_debugDraw.DrawCircle(this->current_player->player_body->GetPosition(), 0.5, current_player_color);
 		}
-		
+
 		if(this->current_ball != nullptr)
 		{
 			b2Color current_ball_color;
@@ -243,25 +257,25 @@ public:
 			current_ball_color.g = 0.5;
 			this->m_debugDraw.DrawCircle(this->current_ball->body->GetPosition(), 0.3, current_ball_color);
 		}
-		
+
 		Test::Step(settings);
 	}
-	
+
 	void make_kick()
 	{
-		
+
 	}
-	
+
 	void move(Settings *settings)
 	{
 		b2Vec2 direction(0,0);
-		
+
 		if(keyStates['w'] || keyStates['W'] || keyStates[72])
 		{
 			//std::cout << "Up ";
 			direction.y += 1;
 		}
-		
+
 		if(keyStates['s'] || keyStates['S'] || keyStates[80])
 		{
 			//std::cout << "Down ";
@@ -277,9 +291,9 @@ public:
 			//std::cout << "Right ";
 			direction.x += 1;
 		}
-		
+
 		direction.Normalize();
-	
+
 		Test::Move(direction.x, direction.y, settings);
 	}
 

@@ -30,7 +30,7 @@ namespace {
 	b2Vec2 lastp;
 	Map *map;
 	float UnitToPixel;
-	
+
 	GLUI_Panel *player_panel;
 	GLUI_Spinner* player_radius;
 	GLUI_Spinner* player_mass;
@@ -40,7 +40,8 @@ namespace {
 	GLUI_Spinner* player_ball_kick_power;
 	GLUI_Spinner* player_bounce;
 	GLUI_Spinner* player_max_speed;
-		
+	GLUI_Spinner* player_leg_length;
+
 	GLUI_Panel *ball_panel;
 	GLUI_Spinner* ball_radius;
 	GLUI_Spinner* ball_mass;

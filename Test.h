@@ -134,6 +134,7 @@ public:
 	float move_impulse_force = 20;
 	float players_kick_power = 100;
 	float max_speed = 30;
+	float leg_length = 0.2;
 };
 const int32 k_maxContactPoints = 2048;
 

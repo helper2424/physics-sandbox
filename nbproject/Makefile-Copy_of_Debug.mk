@@ -71,7 +71,7 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/physics-sandbox.exe: ../../../Box2d/B
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/physics-sandbox.exe: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/physics-sandbox ${OBJECTFILES} ${LDLIBSOPTIONS} -Wdeprecated-declarations
+	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/physics-sandbox ${OBJECTFILES} ${LDLIBSOPTIONS} -Wdeprecated-declarations -lwinmm -lglu32 -lopengl32 -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
 
 ${OBJECTDIR}/BallBody.o: BallBody.cpp 
 	${MKDIR} -p ${OBJECTDIR}

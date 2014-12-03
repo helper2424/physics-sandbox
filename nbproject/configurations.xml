@@ -167,7 +167,7 @@
             <linkerLibFileItem>../../../Box2d/Box2D_v2.3.0/Box2D/Build/freeglut/libfreeglut_static.a</linkerLibFileItem>
             <linkerLibFileItem>../../../Box2d/Box2D_v2.3.0/Box2D/Build/glui/libglui.a</linkerLibFileItem>
           </linkerLibItems>
-          <commandLine>-Wdeprecated-declarations</commandLine>
+          <commandLine>-Wdeprecated-declarations -lwinmm -lglu32 -lopengl32 -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32</commandLine>
         </linkerTool>
       </compileType>
       <item path="BallBody.cpp" ex="false" tool="1" flavor2="0">

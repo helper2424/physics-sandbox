@@ -62,9 +62,6 @@ public:
 private:
 	uint8_t id;
 
-	char *original_data;
-	size_t original_data_size;
-
 	boost::property_tree::ptree pt;
 
 	void load_lines();

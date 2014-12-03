@@ -20,25 +20,11 @@
 
 #include <fstream>
 #include <iostream>
-#include <execinfo.h>
 #include <signal.h>
 #include <stdlib.h>
 #include "Raycast.h"
 
 #include <stdio.h>
-
-void handler(int sig) {
-  void *array[10];
-  size_t size;
-
-  // get void*'s for all entries on the stack
-  size = backtrace(array, 100);
-
-  // print out all the frames to stderr
-  fprintf(stderr, "Error: signal %d:\n", sig);
-  backtrace_symbols_fd(array, size, STDERR_FILENO);
-  exit(1);
-}
 
 static void Resize(int32 w, int32 h)
 {
@@ -482,7 +468,6 @@ int main(int argc, char** argv)
         viewZoom = 1.0f;
         UnitToPixel = 20.0f;
 
-        signal(SIGSEGV, handler);  
         load_map("./map.json");
 	test = new RayCast(map);
 

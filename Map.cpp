@@ -9,6 +9,9 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
+#define _GNU_SOURCE
+#include <string.h>
+
 uint8_t Client::TEAM_MAX = 3;
 
 Map::Map(const char *data, size_t size)
@@ -19,8 +22,6 @@ Map::Map(const char *data, size_t size)
 
 	this->width = this->pt.get<uint32_t>("width");
 	this->height = this->pt.get<uint32_t>("height");
-	this->original_data = strndup(data, size);
-	this->original_data_size = size;
 
 	this->load_balls();
 	this->load_gates();
@@ -161,5 +162,4 @@ void Map::load_gates()
 
 Map::~Map()
 {
-	free(this->original_data);
 }

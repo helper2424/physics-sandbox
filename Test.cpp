@@ -1,20 +1,20 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
-*
-* This software is provided 'as-is', without any express or implied
-* warranty.  In no event will the authors be held liable for any damages
-* arising from the use of this software.
-* Permission is granted to anyone to use this software for any purpose,
-* including commercial applications, and to alter it and redistribute it
-* freely, subject to the following restrictions:
-* 1. The origin of this software must not be misrepresented; you must not
-* claim that you wrote the original software. If you use this software
-* in a product, an acknowledgment in the product documentation would be
-* appreciated but is not required.
-* 2. Altered source versions must be plainly marked as such, and must not be
-* misrepresented as being the original software.
-* 3. This notice may not be removed or altered from any source distribution.
-*/
+ * Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty.  In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ * 1. The origin of this software must not be misrepresented; you must not
+ * claim that you wrote the original software. If you use this software
+ * in a product, an acknowledgment in the product documentation would be
+ * appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ * misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ */
 
 #include "Test.h"
 #include "RayCast.h"
@@ -48,13 +48,13 @@ Test::Test()
 	m_world->SetDestructionListener(&m_destructionListener);
 	m_world->SetContactListener(this);
 	m_world->SetDebugDraw(&m_debugDraw);
-	
+
 	m_bombSpawning = false;
 
 	m_stepCount = 0;
 
-	memset(&m_maxProfile, 0, sizeof(b2Profile));
-	memset(&m_totalProfile, 0, sizeof(b2Profile));
+	memset(&m_maxProfile, 0, sizeof (b2Profile));
+	memset(&m_totalProfile, 0, sizeof (b2Profile));
 }
 
 Test::~Test()
@@ -99,13 +99,14 @@ void Test::PreSolve(b2Contact* contact, const b2Manifold* oldManifold)
 
 void Test::DrawTitle(const char *string)
 {
-    m_debugDraw.DrawString(5, DRAW_STRING_NEW_LINE, string);
-    m_textLine = 2 * DRAW_STRING_NEW_LINE;
+	m_debugDraw.DrawString(5, DRAW_STRING_NEW_LINE, string);
+	m_textLine = 2 * DRAW_STRING_NEW_LINE;
 }
 
 class QueryCallback : public b2QueryCallback
 {
 public:
+
 	QueryCallback(const b2Vec2& point)
 	{
 		m_point = point;
@@ -137,13 +138,18 @@ public:
 
 void Test::SetCurrentPlayer(Player * player)
 {
-        current_player = player;
+	current_player = player;
+}
+
+void Test::MouseDownCallback()
+{
+
 }
 
 void Test::MouseDown(const b2Vec2& p)
 {
 	m_mouseWorld = p;
-	
+
 	if (m_mouseJoint != NULL)
 	{
 		return;
@@ -159,46 +165,48 @@ void Test::MouseDown(const b2Vec2& p)
 	// Query the world for overlapping shapes.
 	QueryCallback callback(p);
 	m_world->QueryAABB(&callback, aabb);
-        
+
 
 	if (callback.m_fixture)
 	{
 		b2Body* body = callback.m_fixture->GetBody();
-                
-                if(body->GetUserData() != nullptr)
-                {
-                   VoidSerializer * object = static_cast<VoidSerializer*>(body->GetUserData()); 
-                   switch(object->get_serialize_class())
-                   {
-                        case VoidSerializer::SERIALIZE_CLASS_CLIENT:
-                        {
-                                Player * player = object->get_pointer<Player>();
-                                current_player = player;
-                                current_ball = nullptr;
-                                ShowPlayerPanel(player);  
-                                break;
-                        }
-                        case VoidSerializer::SERIALIZE_CLASS_BALL:
-                        {
-                                BallBody *ball = object->get_pointer<BallBody>();
-                                current_player = nullptr;
-                                current_ball = ball;
-                                ShowBallPanel(ball);
-                                break;
-                        }
-                   }
-                }
-                else
-                        current_player = nullptr;
-                
+
+		if (body->GetUserData() != nullptr)
+		{
+			VoidSerializer * object = static_cast<VoidSerializer*> (body->GetUserData());
+			switch (object->get_serialize_class())
+			{
+				case VoidSerializer::SERIALIZE_CLASS_CLIENT:
+				{
+					Player * player = object->get_pointer<Player>();
+					current_player = player;
+					current_ball = nullptr;
+					ShowPlayerPanel(player);
+
+					MouseDownCallback();
+					break;
+				}
+				case VoidSerializer::SERIALIZE_CLASS_BALL:
+				{
+					BallBody *ball = object->get_pointer<BallBody>();
+					current_player = nullptr;
+					current_ball = ball;
+					ShowBallPanel(ball);
+					break;
+				}
+			}
+		}
+		else
+			current_player = nullptr;
+
 		b2MouseJointDef md;
 		md.bodyA = m_groundBody;
 		md.bodyB = body;
 		md.target = p;
 		md.maxForce = 1000.0f * body->GetMass();
-                std::cout << "test2" << std::endl;
-		m_mouseJoint = (b2MouseJoint*)m_world->CreateJoint(&md);
-                std::cout << "test3" << std::endl;
+		std::cout << "test2" << std::endl;
+		m_mouseJoint = (b2MouseJoint*) m_world->CreateJoint(&md);
+		std::cout << "test3" << std::endl;
 		body->SetAwake(true);
 	}
 }
@@ -208,7 +216,7 @@ void Test::SpawnBomb(const b2Vec2& worldPt)
 	m_bombSpawnPoint = worldPt;
 	m_bombSpawning = true;
 }
-    
+
 void Test::CompleteBombSpawn(const b2Vec2& p)
 {
 	if (m_bombSpawning == false)
@@ -219,14 +227,14 @@ void Test::CompleteBombSpawn(const b2Vec2& p)
 	const float multiplier = 30.0f;
 	b2Vec2 vel = m_bombSpawnPoint - p;
 	vel *= multiplier;
-	LaunchBomb(m_bombSpawnPoint,vel);
+	LaunchBomb(m_bombSpawnPoint, vel);
 	m_bombSpawning = false;
 }
 
 void Test::ShiftMouseDown(const b2Vec2& p)
 {
 	m_mouseWorld = p;
-	
+
 	if (m_mouseJoint != NULL)
 	{
 		return;
@@ -242,7 +250,7 @@ void Test::MouseUp(const b2Vec2& p)
 		m_world->DestroyJoint(m_mouseJoint);
 		m_mouseJoint = NULL;
 	}
-	
+
 	if (m_bombSpawning)
 	{
 		CompleteBombSpawn(p);
@@ -252,7 +260,7 @@ void Test::MouseUp(const b2Vec2& p)
 void Test::MouseMove(const b2Vec2& p)
 {
 	m_mouseWorld = p;
-	
+
 	if (m_mouseJoint)
 	{
 		m_mouseJoint->SetTarget(p);
@@ -280,7 +288,7 @@ void Test::LaunchBomb(const b2Vec2& position, const b2Vec2& velocity)
 	bd.bullet = true;
 	m_bomb = m_world->CreateBody(&bd);
 	m_bomb->SetLinearVelocity(velocity);
-	
+
 	b2CircleShape circle;
 	circle.m_radius = 0.3f;
 
@@ -288,10 +296,10 @@ void Test::LaunchBomb(const b2Vec2& position, const b2Vec2& velocity)
 	fd.shape = &circle;
 	fd.density = 20.0f;
 	fd.restitution = 0.0f;
-	
-	b2Vec2 minV = position - b2Vec2(0.3f,0.3f);
-	b2Vec2 maxV = position + b2Vec2(0.3f,0.3f);
-	
+
+	b2Vec2 minV = position - b2Vec2(0.3f, 0.3f);
+	b2Vec2 maxV = position + b2Vec2(0.3f, 0.3f);
+
 	b2AABB aabb;
 	aabb.lowerBound = minV;
 	aabb.upperBound = maxV;
@@ -319,10 +327,10 @@ void Test::Step(Settings* settings)
 	}
 
 	uint32 flags = 0;
-	flags += settings->drawShapes			* b2Draw::e_shapeBit;
-	flags += settings->drawJoints			* b2Draw::e_jointBit;
-	flags += settings->drawAABBs			* b2Draw::e_aabbBit;
-	flags += settings->drawCOMs				* b2Draw::e_centerOfMassBit;
+	flags += settings->drawShapes * b2Draw::e_shapeBit;
+	flags += settings->drawJoints * b2Draw::e_jointBit;
+	flags += settings->drawAABBs * b2Draw::e_aabbBit;
+	flags += settings->drawCOMs * b2Draw::e_centerOfMassBit;
 	m_debugDraw.SetFlags(flags);
 
 	m_world->SetAllowSleeping(settings->enableSleep > 0);
@@ -384,7 +392,7 @@ void Test::Step(Settings* settings)
 		const b2Profile& p = m_world->GetProfile();
 
 		b2Profile aveProfile;
-		memset(&aveProfile, 0, sizeof(b2Profile));
+		memset(&aveProfile, 0, sizeof (b2Profile));
 		if (m_stepCount > 0)
 		{
 			float32 scale = 1.0f / m_stepCount;
@@ -429,7 +437,7 @@ void Test::Step(Settings* settings)
 		c.Set(0.8f, 0.8f, 0.8f);
 		m_debugDraw.DrawSegment(p1, p2, c);
 	}
-	
+
 	if (m_bombSpawning)
 	{
 		b2Color c;
@@ -484,12 +492,31 @@ void Test::Step(Settings* settings)
 	}
 }
 
-void Test::Move(float32 x, float32 y)
+void Test::Move(float32 x, float32 y, Settings * settings)
 {
-        if(current_player != nullptr && x!= 0 && y!= 0)
-        {
-                current_player->player_body->ApplyForceToCenter(b2Vec2(x*current_player->move_force, y*current_player->move_force), true);
-        }
+	if (current_player != nullptr && (x != 0 || y != 0))
+	{
+		if (settings->forceToMove)
+		{
+			current_player->player_body->ApplyForceToCenter(b2Vec2(x * current_player->move_impulse_force, y * current_player->move_impulse_force), true);
+		}
+		else
+		{
+			current_player->player_body->ApplyLinearImpulse(b2Vec2(x * current_player->move_impulse_force, y * current_player->move_impulse_force), current_player->player_body->GetPosition(), true);
+		}
+	}
+
+	if (settings->useSpeedLimit)
+	{
+		if (current_player->player_body->GetLinearVelocity().LengthSquared() > current_player->max_speed * current_player->max_speed)
+		{
+			b2Vec2 buf = current_player->player_body->GetLinearVelocity();
+			buf.Normalize();
+			buf *= current_player->max_speed;
+
+			current_player->player_body->SetLinearVelocity(buf);
+		}
+	}
 }
 
 void Test::ShiftOrigin(const b2Vec2& newOrigin)

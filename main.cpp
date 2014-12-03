@@ -74,7 +74,6 @@ static b2Vec2 ConvertScreenToWorld(int32 x, int32 y)
 	p.x = x/convertCoeff -2;
 	p.y = map->height + 2 - y/convertCoeff;
         
-        std::cout << "Convert to world " << p.x << " " << p.y << std::endl;
 	return p;
 }
 
@@ -163,36 +162,12 @@ static void Keyboard(unsigned char key, int x, int y)
 		break;
 
 		// Press space to launch a bomb.
-	case ' ':
-		if (test)
-		{
-			test->LaunchBomb();
-		}
-		break;
  
 	case 'p':
 		settings.pause = !settings.pause;
 		break;
 
 		// Press [ to prev test.
-	case '[':
-		--testSelection;
-		if (testSelection < 0)
-		{
-			testSelection = testCount - 1;
-		}
-		glui->sync_live();
-		break;
-
-		// Press ] to next test.
-	case ']':
-		++testSelection;
-		if (testSelection == testCount)
-		{
-			testSelection = 0;
-		}
-		glui->sync_live();
-		break;
                         
 	default:
 		if (test)
@@ -340,10 +315,11 @@ void ShowPlayerPanel(Player *player)
         
         player_radius->set_float_val(test->current_player->player_fixture->GetShape()->m_radius);
         player_mass->set_float_val(test->current_player->player_body->GetMass());
-        player_move_force->set_float_val(test->current_player->move_force);
+        player_move_force->set_float_val(test->current_player->move_impulse_force);
         player_liner_dumping->set_float_val(test->current_player->player_body->GetLinearDamping());
         player_player_kick_power->set_float_val(test->current_player->players_kick_power);
         player_bounce->set_float_val(test->current_player->player_fixture->GetRestitution());
+        player_max_speed->set_float_val(test->current_player->max_speed);
         
         player_panel->enable();
 }
@@ -366,7 +342,7 @@ static void UpdatePlayer(int)
         if(test->current_player != nullptr)
         {
                 test->current_player->player_fixture->GetShape()->m_radius = player_radius->get_float_val();
-                test->current_player->move_force = player_move_force->get_float_val();
+                test->current_player->move_impulse_force = player_move_force->get_float_val();
                 test->current_player->player_body->SetLinearDamping(player_liner_dumping->get_float_val());
                 test->current_player->players_kick_power = player_player_kick_power->get_float_val();
                 
@@ -376,6 +352,7 @@ static void UpdatePlayer(int)
                 test->current_player->player_body->SetMassData(&buf);
                 
                 test->current_player->player_fixture->SetRestitution(player_bounce->get_float_val());
+                test->current_player->max_speed = player_max_speed->get_float_val();
         }
 }
 
@@ -534,6 +511,8 @@ int main(int argc, char** argv)
 	glui->add_checkbox_to_panel(drawPanel, "Joints", &settings.drawJoints);
 	glui->add_checkbox_to_panel(drawPanel, "AABBs", &settings.drawAABBs);
 	glui->add_checkbox_to_panel(drawPanel, "Contact Points", &settings.drawContactPoints);
+        glui->add_checkbox_to_panel(drawPanel, "Moving with force", &settings.forceToMove);
+        glui->add_checkbox_to_panel(drawPanel, "Limit velocity", &settings.useSpeedLimit);
 	//glui->add_checkbox_to_panel(drawPanel, "Contact Normals", &settings.drawContactNormals);
 	//glui->add_checkbox_to_panel(drawPanel, "Contact Impulses", &settings.drawContactImpulse);
 	//glui->add_checkbox_to_panel(drawPanel, "Friction Impulses", &settings.drawFrictionImpulse);
@@ -550,10 +529,11 @@ int main(int argc, char** argv)
         float val = 20;
         add_to_panel(player_panel, &player_radius, "radius", val);
         add_to_panel(player_panel, &player_mass, "mass", val);
-        add_to_panel(player_panel, &player_move_force, "move_force", val, 1, 100000, 1);
+        add_to_panel(player_panel, &player_move_force, "move impulse force", val, 1, 100000, 1);
         add_to_panel(player_panel, &player_liner_dumping, "velocity dumping", val);
         add_to_panel(player_panel, &player_player_kick_power, "player kick power", val);
         add_to_panel(player_panel, &player_bounce,  "bounce", val);
+        add_to_panel(player_panel, &player_max_speed, "max velocity", val);
         
         glui->add_button_to_panel(player_panel, "Update", 0, UpdatePlayer);
                 

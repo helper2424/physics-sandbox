@@ -40,6 +40,7 @@ namespace {
 	GLUI_Spinner* player_player_kick_power;
 	GLUI_Spinner* player_ball_kick_power;
 	GLUI_Spinner* player_bounce;
+	GLUI_Spinner* player_max_speed;
 		
 	GLUI_Panel *ball_panel;
 	GLUI_Spinner* ball_radius;

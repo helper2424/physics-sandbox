@@ -25,6 +25,12 @@ public:
 	bool* keyStates = new bool[256];
 	bool wasKick;
 	
+	virtual void MouseDownCallback()
+	{
+		for(int i =0; i<256; i++)
+			keyStates[i] = false;
+	}
+	
 	void KeyboardUp (unsigned char key) {
 		keyStates[key] = false; // Set the state of the current key to not pressed  
 	}  
@@ -179,6 +185,11 @@ public:
 					new_player->player_body = player_body;
 					new_player->player_fixture = fixture;
 					player_body->SetUserData(new_player);
+					
+					b2MassData buf;
+					player_body->GetMassData(&buf);
+					buf.mass = 1;
+					player_body->SetMassData(&buf);
 				}
 		}
 	}
@@ -215,7 +226,7 @@ public:
 	{
 		if(this->current_player != nullptr)
 		{
-			this->move();
+			this->move(settings);
 		
 			b2Color current_player_color;
 			current_player_color.b = 1;
@@ -241,22 +252,35 @@ public:
 		
 	}
 	
-	void move()
+	void move(Settings *settings)
 	{
 		b2Vec2 direction(0,0);
 		
-		if(keyStates['w'] || keyStates['W'])
+		if(keyStates['w'] || keyStates['W'] || keyStates[72])
+		{
+			//std::cout << "Up ";
 			direction.y += 1;
-		if(keyStates['s'] || keyStates['S'])
+		}
+		
+		if(keyStates['s'] || keyStates['S'] || keyStates[80])
+		{
+			//std::cout << "Down ";
 			direction.y -= 1;
-		if(keyStates['a'] || keyStates['A'])
+		}
+		if(keyStates['a'] || keyStates['A'] || keyStates[75])
+		{
+			//std::cout << "Left ";
 			direction.x -= 1;
-		if(keyStates['d'] || keyStates['D'])
+		}
+		if(keyStates['d'] || keyStates['D'] || keyStates[77])
+		{
+			//std::cout << "Right ";
 			direction.x += 1;
+		}
 		
 		direction.Normalize();
-		
-		Test::Move(direction.x, direction.y);
+	
+		Test::Move(direction.x, direction.y, settings);
 	}
 
 };

@@ -77,6 +77,8 @@ struct Settings
 		enableSleep = 1;
 		pause = 0;
 		singleStep = 0;
+		forceToMove = 1;
+		useSpeedLimit = 1;
 	}
 
 	b2Vec2 viewCenter;
@@ -99,6 +101,8 @@ struct Settings
 	int32 enableSleep;
 	int32 pause;
 	int32 singleStep;
+	int32 forceToMove;
+	int32 useSpeedLimit;
 };
 
 struct TestEntry
@@ -126,9 +130,10 @@ public:
 	Player() : VoidSerializer(static_cast<void*>(this), VoidSerializer::SERIALIZE_CLASS_CLIENT) {}
 	b2Body * player_body;
 	b2Fixture * player_fixture;
-	
-	float move_force = 20;
+
+	float move_impulse_force = 20;
 	float players_kick_power = 100;
+	float max_speed = 30;
 };
 const int32 k_maxContactPoints = 2048;
 
@@ -157,11 +162,12 @@ public:
 	virtual void KeyboardUp(unsigned char key) { B2_NOT_USED(key); }
 	void ShiftMouseDown(const b2Vec2& p);
 	virtual void MouseDown(const b2Vec2& p);
+	virtual void MouseDownCallback();
 	virtual void MouseUp(const b2Vec2& p);
 	void MouseMove(const b2Vec2& p);
 	void LaunchBomb();
 	void LaunchBomb(const b2Vec2& position, const b2Vec2& velocity);
-	
+
 	void SpawnBomb(const b2Vec2& worldPt);
 	void CompleteBombSpawn(const b2Vec2& p);
 
@@ -180,7 +186,7 @@ public:
 
 	void ShiftOrigin(const b2Vec2& newOrigin);
 	void SetCurrentPlayer(Player * player);
-	void Move(float32 x, float32 y);
+	void Move(float32 x, float32 y, Settings*);
 
 	friend class DestructionListener;
 	friend class BoundaryListener;
@@ -203,7 +209,7 @@ public:
 
 	b2Profile m_maxProfile;
 	b2Profile m_totalProfile;
-	
+
 	Player * current_player;
 	BallBody * current_ball;
 };

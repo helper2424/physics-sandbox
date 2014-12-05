@@ -341,6 +341,7 @@ static void UpdatePlayer(int)
                 test->current_player->player_fixture->SetRestitution(player_bounce->get_float_val());
                 test->current_player->max_speed = player_max_speed->get_float_val();
 		test->current_player->leg_length = player_leg_length->get_float_val();
+		test->current_player->linearDumping = player_liner_dumping->get_float_val();
         }
 }
 
@@ -435,6 +436,11 @@ void add_to_panel(GLUI_Panel* panel, GLUI_Spinner** spinner, const char * name, 
         (*spinner)->set_speed(speed);
 }
 
+void ShowCurrentSpeed(float val)
+{
+	current_player_ball_speed->set_float_val(val);
+}
+
 int main(int argc, char** argv)
 {
         testIndex = 0;
@@ -443,7 +449,7 @@ int main(int argc, char** argv)
         width = 1200;
         height = 600;
         framePeriod = 16;
-        settingsHz = 60.0;
+        settingsHz = 50;
         viewZoom = 1.0f;
         UnitToPixel = 20.0f;
 
@@ -496,6 +502,7 @@ int main(int argc, char** argv)
 	GLUI_Panel* drawPanel =	glui->add_panel("Draw");
         glui->add_checkbox_to_panel(drawPanel, "Moving with force", &settings.forceToMove);
         glui->add_checkbox_to_panel(drawPanel, "Limit velocity", &settings.useSpeedLimit);
+	glui->add_checkbox_to_panel(drawPanel, "Damping speed when move",&settings.isMoveLinearDamping);
 	//glui->add_checkbox_to_panel(drawPanel, "Contact Normals", &settings.drawContactNormals);
 	//glui->add_checkbox_to_panel(drawPanel, "Contact Impulses", &settings.drawContactImpulse);
 	//glui->add_checkbox_to_panel(drawPanel, "Friction Impulses", &settings.drawFrictionImpulse);
@@ -506,6 +513,10 @@ int main(int argc, char** argv)
 	glui->add_button("Pause", 0, Pause);
 	glui->add_button("Single Step", 0, SingleStep);
 	glui->add_button("Restart", 0, Restart);
+
+		void * someval = nullptr;
+
+	current_player_ball_speed = glui->add_edittext("current speed", GLUI_EDITTEXT_FLOAT, someval);
 
         //Player panel
         player_panel = glui->add_panel("Player", GLUI_PANEL_EMBOSSED);

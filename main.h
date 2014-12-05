@@ -48,8 +48,12 @@ namespace {
 	GLUI_Spinner* ball_liner_dumping;
 	GLUI_Spinner* ball_angular_dumping;
 	GLUI_Spinner* ball_bounce;
+
+	GLUI_EditText *current_player_ball_speed;
 }
 
 void ShowPlayerPanel(Player *);
 
 void ShowBallPanel(BallBody *);
+
+void ShowCurrentSpeed(float);

@@ -25,6 +25,7 @@
 #include "BallBody.h"
 
 #include <stdlib.h>
+#include <vector>
 
 class Test;
 struct Settings;
@@ -58,7 +59,7 @@ struct Settings
 	Settings()
 	{
 		viewCenter.Set(0.0f, 20.0f);
-		hz = 60.0f;
+		hz = 50.0f;
 		velocityIterations = 8;
 		positionIterations = 3;
 		drawShapes = 1;
@@ -103,6 +104,7 @@ struct Settings
 	int32 singleStep;
 	int32 forceToMove;
 	int32 useSpeedLimit;
+	int32 isMoveLinearDamping;
 };
 
 struct TestEntry
@@ -135,6 +137,9 @@ public:
 	float players_kick_power = 100;
 	float max_speed = 30;
 	float leg_length = 0.2;
+	float linearDumping;
+	bool pressKey = false;
+	bool wasKick = false;
 };
 const int32 k_maxContactPoints = 2048;
 
@@ -168,6 +173,7 @@ public:
 	void MouseMove(const b2Vec2& p);
 	void LaunchBomb();
 	void LaunchBomb(const b2Vec2& position, const b2Vec2& velocity);
+	void kick(Player *);
 
 	void SpawnBomb(const b2Vec2& worldPt);
 	void CompleteBombSpawn(const b2Vec2& p);
@@ -187,7 +193,7 @@ public:
 
 	void ShiftOrigin(const b2Vec2& newOrigin);
 	void SetCurrentPlayer(Player * player);
-	void Move(float32 x, float32 y, Settings*);
+	void Move(Player*,float32 x, float32 y, Settings*);
 
 	friend class DestructionListener;
 	friend class BoundaryListener;
@@ -213,6 +219,7 @@ public:
 
 	Player * current_player;
 	BallBody * current_ball;
+	std::vector<Player *> players;
 };
 
 #endif

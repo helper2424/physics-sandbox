@@ -6,6 +6,7 @@
 
 #include "BallBody.h"
 #include "Test.h"
+#include "main.h"
 
 class RayCast : public Test
 {
@@ -91,7 +92,7 @@ public:
 		player_definition.bullet = false;
 		player_definition.fixedRotation = false;
 		player_definition.gravityScale = 1;
-		player_definition.linearDamping = 0;
+		player_definition.linearDamping = 3;
 		player_definition.linearVelocity.Set(0, 0);
 		player_definition.position.Set(0, 0);
 		player_definition.type = b2_dynamicBody;
@@ -106,7 +107,7 @@ public:
 		ball_definition.bullet = false;
 		ball_definition.fixedRotation = false;
 		ball_definition.gravityScale = 1;
-		ball_definition.linearDamping = 0;
+		ball_definition.linearDamping = 1;
 		ball_definition.linearVelocity.Set(0, 0);
 		ball_definition.position.Set(-10, -10);
 		ball_definition.type = b2_dynamicBody;
@@ -190,6 +191,8 @@ public:
 					player_body->GetMassData(&buf);
 					buf.mass = 1;
 					player_body->SetMassData(&buf);
+
+					new_player->linearDumping = player_body->GetLinearDamping();
 				}
 		}
 	}
@@ -232,11 +235,21 @@ public:
 			kick_player_color.r = 1;
 			kick_player_color.g = 0.3;
 			this->m_debugDraw.DrawCircle(this->current_player->player_body->GetPosition(), player_shape->m_radius + this->current_player->leg_length,kick_player_color);
+			test->current_player->pressKey = true;
+		}
+		else
+			test->current_player->pressKey = false;
+
+		if(test->current_player->pressKey && !test->current_player->wasKick)
+		{
+			Test::kick(test->current_player);
 		}
 	}
 
 	void Step(Settings* settings)
 	{
+		Test::Step(settings);
+
 		if(this->current_player != nullptr)
 		{
 			this->move(settings);
@@ -247,6 +260,8 @@ public:
 			current_player_color.r = 1;
 			current_player_color.g = 1;
 			this->m_debugDraw.DrawCircle(this->current_player->player_body->GetPosition(), 0.5, current_player_color);
+
+			ShowCurrentSpeed(this->current_player->player_body->GetLinearVelocity().Length());
 		}
 
 		if(this->current_ball != nullptr)
@@ -256,9 +271,10 @@ public:
 			current_ball_color.r = 1;
 			current_ball_color.g = 0.5;
 			this->m_debugDraw.DrawCircle(this->current_ball->body->GetPosition(), 0.3, current_ball_color);
-		}
 
-		Test::Step(settings);
+			if(this->current_player == nullptr)
+				ShowCurrentSpeed(this->current_ball->body->GetLinearVelocity().Length());
+		}
 	}
 
 	void make_kick()
@@ -294,7 +310,7 @@ public:
 
 		direction.Normalize();
 
-		Test::Move(direction.x, direction.y, settings);
+		Test::Move(test->current_player, direction.x, direction.y, settings);
 	}
 
 };

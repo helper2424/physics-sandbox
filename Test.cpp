@@ -21,6 +21,8 @@
 #include <stdio.h>
 #include <iostream>
 #include "main.h"
+#include <algorithm>
+#include <Box2D/Common/b2Math.h>
 
 void DestructionListener::SayGoodbye(b2Joint* joint)
 {
@@ -492,30 +494,59 @@ void Test::Step(Settings* settings)
 	}
 }
 
-void Test::Move(float32 x, float32 y, Settings * settings)
+void Test::kick(Player * player)
 {
-	if (current_player != nullptr && (x != 0 || y != 0))
+	if(player->pressKey && !player->wasKick)
 	{
+		for(auto iter : this->players)
+		{
+			;//if(Box2D::b2Math.::->player_body->GetPosition().)
+		}
+	}
+}
+
+void Test::Move(Player * player, float32 x, float32 y, Settings * settings)
+{
+	if (player != nullptr && (x != 0 || y != 0))
+	{
+		if(!settings->isMoveLinearDamping)
+		{
+			player->player_body->SetLinearDamping(0);
+		}
+
 		if (settings->forceToMove)
 		{
-			current_player->player_body->ApplyForceToCenter(b2Vec2(x * current_player->move_impulse_force, y * current_player->move_impulse_force), true);
+			float move_impulse_force_buf = player->move_impulse_force;
+
+			if(settings->useSpeedLimit)
+			{
+				float max_force = player->max_speed * player->player_body->GetMass() / (2.0 / settings->hz);
+
+				std::cout << "Max force " << max_force << " real force " << move_impulse_force_buf << std::endl;
+				move_impulse_force_buf = std::min<float>(max_force, move_impulse_force_buf);
+				std::cout << "Result force " << move_impulse_force_buf << std::endl;
+			}
+
+			player->player_body->ApplyForceToCenter(b2Vec2(x * move_impulse_force_buf, y * move_impulse_force_buf), true);
 		}
 		else
 		{
-			current_player->player_body->ApplyLinearImpulse(b2Vec2(x * current_player->move_impulse_force, y * current_player->move_impulse_force), current_player->player_body->GetPosition(), true);
+			player->player_body->ApplyLinearImpulse(b2Vec2(x * player->move_impulse_force, y * player->move_impulse_force), player->player_body->GetPosition(), true);
+		}
+
+		if(settings->useSpeedLimit && player->player_body->GetLinearVelocity().LengthSquared() > player->max_speed * player->max_speed)
+		{
+			b2Vec2 buf = player->player_body->GetLinearVelocity();
+			buf.Normalize();
+			buf *= player->max_speed;
+
+			player->player_body->SetLinearVelocity(buf);
 		}
 	}
 
-	if (settings->useSpeedLimit)
+	if(player != nullptr && (x == 0) && y == 0)
 	{
-		if (current_player->player_body->GetLinearVelocity().LengthSquared() > current_player->max_speed * current_player->max_speed)
-		{
-			b2Vec2 buf = current_player->player_body->GetLinearVelocity();
-			buf.Normalize();
-			buf *= current_player->max_speed;
-
-			current_player->player_body->SetLinearVelocity(buf);
-		}
+		player->player_body->SetLinearDamping(player->linearDumping);
 	}
 }
 

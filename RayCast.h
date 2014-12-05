@@ -45,10 +45,6 @@ public:
 		CATEGORY_PICKABLE	= 0x00016
 	};
 
-	typedef std::list<BallBody> balls_t;
-
-	balls_t balls;
-
 	RayCast(Map *map)
 	{
 		std::cout << "End creating objects" << std::endl;
@@ -193,6 +189,7 @@ public:
 					player_body->SetMassData(&buf);
 
 					new_player->linearDumping = player_body->GetLinearDamping();
+					this->players.push_back(new_player);
 				}
 		}
 	}
@@ -229,21 +226,26 @@ public:
 	{
 		if(keyStates[' '])
 		{
+			test->current_player->pressKey = true;
+		}
+		else
+		{
+			test->current_player->pressKey = false;
+			test->current_player->wasKick = false;
+		}
+
+		if(test->current_player->pressKey && !test->current_player->wasKick)
+		{
 			b2CircleShape *player_shape = static_cast<b2CircleShape*>(this->current_player->player_fixture->GetShape());
 			b2Color kick_player_color;
 			kick_player_color.b = 0;
 			kick_player_color.r = 1;
 			kick_player_color.g = 0.3;
 			this->m_debugDraw.DrawCircle(this->current_player->player_body->GetPosition(), player_shape->m_radius + this->current_player->leg_length,kick_player_color);
-			test->current_player->pressKey = true;
-		}
-		else
-			test->current_player->pressKey = false;
 
-		if(test->current_player->pressKey && !test->current_player->wasKick)
-		{
-			Test::kick(test->current_player);
 		}
+
+		Test::kick(test->current_player);
 	}
 
 	void Step(Settings* settings)
@@ -254,7 +256,6 @@ public:
 		{
 			this->move(settings);
 			this->kick();
-
 			b2Color current_player_color;
 			current_player_color.b = 1;
 			current_player_color.r = 1;
@@ -275,6 +276,12 @@ public:
 			if(this->current_player == nullptr)
 				ShowCurrentSpeed(this->current_ball->body->GetLinearVelocity().Length());
 		}
+
+		for(auto player : this->players)
+			this->threshold(player->player_body, settings->playerThreshold);
+
+		for(auto ball : this->balls)
+			this->threshold(ball.body, settings->ballThreshold);
 	}
 
 	void make_kick()

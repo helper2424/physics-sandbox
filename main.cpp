@@ -291,14 +291,15 @@ static void Mouse(int32 button, int32 state, int32 x, int32 y)
 
 void HidePanels()
 {
-        ball_panel->disable();
-        player_panel->disable();
+        ball_panel->close();
+        player_panel->close();
 }
 
 void ShowPlayerPanel(Player *player)
 {
         HidePanels();
 
+	player_panel->open();
         player_radius->set_float_val(test->current_player->player_fixture->GetShape()->m_radius);
         player_mass->set_float_val(test->current_player->player_body->GetMass());
         player_move_force->set_float_val(test->current_player->move_impulse_force);
@@ -307,6 +308,8 @@ void ShowPlayerPanel(Player *player)
         player_bounce->set_float_val(test->current_player->player_fixture->GetRestitution());
         player_max_speed->set_float_val(test->current_player->max_speed);
 	player_leg_length->set_float_val(test->current_player->leg_length);
+	player_ball_kick_power->set_float_val(test->current_player->ball_kick_power);
+	player_threshold->set_float_val(settings.playerThreshold);
 
         player_panel->enable();
 }
@@ -315,11 +318,15 @@ void ShowBallPanel(BallBody* ball)
 {
         HidePanels();
 
+	ball_panel->open();
+
         ball_radius->set_float_val(test->current_ball->ball_fixture->GetShape()->m_radius);
 	ball_liner_dumping->set_float_val(test->current_ball->body->GetLinearDamping());
 	ball_angular_dumping->set_float_val(test->current_ball->body->GetAngularDamping());
         ball_bounce->set_float_val(test->current_ball->ball_fixture->GetRestitution());
         ball_mass->set_float_val(test->current_ball->body->GetMass());
+	ball_threshold->set_float_val(settings.ballThreshold);
+
 
         ball_panel->enable();
 }
@@ -332,6 +339,7 @@ static void UpdatePlayer(int)
                 test->current_player->move_impulse_force = player_move_force->get_float_val();
                 test->current_player->player_body->SetLinearDamping(player_liner_dumping->get_float_val());
                 test->current_player->players_kick_power = player_player_kick_power->get_float_val();
+		test->current_player->ball_kick_power = player_ball_kick_power->get_float_val();
 
                 b2MassData buf;
                 test->current_player->player_body->GetMassData(&buf);
@@ -342,6 +350,7 @@ static void UpdatePlayer(int)
                 test->current_player->max_speed = player_max_speed->get_float_val();
 		test->current_player->leg_length = player_leg_length->get_float_val();
 		test->current_player->linearDumping = player_liner_dumping->get_float_val();
+		settings.playerThreshold = player_threshold->get_float_val();
         }
 }
 
@@ -358,6 +367,7 @@ static void UpdateBall(int)
                 test->current_ball->body->GetMassData(&buf);
                 buf.mass = ball_mass->get_float_val();
                 test->current_ball->body->SetMassData(&buf);
+		settings.ballThreshold = ball_threshold->get_float_val();
         }
 }
 
@@ -438,7 +448,10 @@ void add_to_panel(GLUI_Panel* panel, GLUI_Spinner** spinner, const char * name, 
 
 void ShowCurrentSpeed(float val)
 {
-	current_player_ball_speed->set_float_val(val);
+	last_show_speed += 1/(settings.hz);
+
+	if(last_show_speed >= 0.5)
+		current_player_ball_speed->set_float_val(val);
 }
 
 int main(int argc, char** argv)
@@ -519,27 +532,30 @@ int main(int argc, char** argv)
 	current_player_ball_speed = glui->add_edittext("current speed", GLUI_EDITTEXT_FLOAT, someval);
 
         //Player panel
-        player_panel = glui->add_panel("Player", GLUI_PANEL_EMBOSSED);
+        player_panel = glui->add_rollout("Player", false);
         float val = 20;
         add_to_panel(player_panel, &player_radius, "radius", val);
         add_to_panel(player_panel, &player_mass, "mass", val);
         add_to_panel(player_panel, &player_move_force, "move impulse force", val, 1, 100000, 1);
         add_to_panel(player_panel, &player_liner_dumping, "velocity dumping", val);
-        add_to_panel(player_panel, &player_player_kick_power, "player kick power", val);
+        add_to_panel(player_panel, &player_player_kick_power, "player kick power", val, 1, 100000, 1);
+	add_to_panel(player_panel, &player_ball_kick_power, "ball kick power", val, 1, 100000, 1);
         add_to_panel(player_panel, &player_bounce,  "bounce", val);
         add_to_panel(player_panel, &player_max_speed, "max velocity", val);
 	add_to_panel(player_panel, &player_leg_length, "leg length", val);
+	add_to_panel(player_panel, &player_threshold, "threshold", val);
 
         glui->add_button_to_panel(player_panel, "Update", 0, UpdatePlayer);
 
         //Ball panel
-        ball_panel = glui->add_panel("Ball", GLUI_PANEL_EMBOSSED);
+        ball_panel = glui->add_rollout("Ball", false);
         float val1 = 1;
         add_to_panel(ball_panel, &ball_radius, "radius", val);
         add_to_panel(ball_panel, &ball_mass, "mass", val);
         add_to_panel(ball_panel, &ball_liner_dumping, "velocity dumping", val);
         add_to_panel(ball_panel, &ball_bounce, "bounce",val);
         add_to_panel(ball_panel, &ball_angular_dumping, "angular dumping", val);
+	add_to_panel(ball_panel, &ball_threshold, "threshold", val);
 
         glui->add_button_to_panel(ball_panel, "Update", 0, UpdateBall);
 

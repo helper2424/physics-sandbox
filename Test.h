@@ -26,6 +26,7 @@
 
 #include <stdlib.h>
 #include <vector>
+#include <list>
 
 class Test;
 struct Settings;
@@ -80,6 +81,8 @@ struct Settings
 		singleStep = 0;
 		forceToMove = 1;
 		useSpeedLimit = 1;
+		playerThreshold = 0.1;
+		ballThreshold = 0.1;
 	}
 
 	b2Vec2 viewCenter;
@@ -105,6 +108,8 @@ struct Settings
 	int32 forceToMove;
 	int32 useSpeedLimit;
 	int32 isMoveLinearDamping;
+	float playerThreshold;
+	float ballThreshold;
 };
 
 struct TestEntry
@@ -135,6 +140,7 @@ public:
 
 	float move_impulse_force = 20;
 	float players_kick_power = 100;
+	float ball_kick_power = 100;
 	float max_speed = 30;
 	float leg_length = 0.2;
 	float linearDumping;
@@ -174,6 +180,8 @@ public:
 	void LaunchBomb();
 	void LaunchBomb(const b2Vec2& position, const b2Vec2& velocity);
 	void kick(Player *);
+	void kick(b2Body * kicker, b2Body *kickable, float kick_power);
+	void threshold(b2Body * body, float limit);
 
 	void SpawnBomb(const b2Vec2& worldPt);
 	void CompleteBombSpawn(const b2Vec2& p);
@@ -220,6 +228,9 @@ public:
 	Player * current_player;
 	BallBody * current_ball;
 	std::vector<Player *> players;
+	typedef std::list<BallBody> balls_t;
+
+	balls_t balls;
 };
 
 #endif

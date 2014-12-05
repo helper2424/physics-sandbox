@@ -496,13 +496,52 @@ void Test::Step(Settings* settings)
 
 void Test::kick(Player * player)
 {
+	if(player == nullptr)
+		return;
+
 	if(player->pressKey && !player->wasKick)
 	{
+		bool new_was_kick = false;
 		for(auto iter : this->players)
+			if(&*iter != player)
+			{
+				float kickDistance = iter->player_fixture->GetShape()->m_radius + player->leg_length + player->player_fixture->GetShape()->m_radius;
+				if(b2Distance(iter->player_body->GetPosition(), player->player_body->GetPosition()) <= kickDistance)
+				{
+					this->kick(player->player_body, iter->player_body, player->players_kick_power);
+					new_was_kick = true;
+				}
+			}
+
+		for(auto ball : this->balls)
 		{
-			;//if(Box2D::b2Math.::->player_body->GetPosition().)
+			float kickDistance = ball.ball_fixture->GetShape()->m_radius + player->leg_length + player->player_fixture->GetShape()->m_radius;
+			if(b2Distance(ball.body->GetPosition(), player->player_body->GetPosition()) <= kickDistance)
+			{
+				this->kick(player->player_body, ball.body, player->ball_kick_power);
+				new_was_kick = true;
+			}
 		}
+
+		player->wasKick = new_was_kick;
 	}
+}
+
+void Test::threshold(b2Body* body, float limit)
+{
+	if(body->GetLinearVelocity().LengthSquared() <= limit*limit)
+		body->SetLinearVelocity(b2Vec2(0,0));
+}
+
+void Test::kick(b2Body * kicker, b2Body *kickable, float kick_power)
+{
+	b2Vec2 forceVec2;
+	forceVec2 = kickable->GetPosition() - kicker->GetPosition();
+	forceVec2.Normalize();
+	forceVec2 *= kick_power;
+	kickable->ApplyForceToCenter(forceVec2, true);
+
+	std::cout << "Result power " << forceVec2.x << " " << forceVec2.y << std::endl;
 }
 
 void Test::Move(Player * player, float32 x, float32 y, Settings * settings)
@@ -522,9 +561,7 @@ void Test::Move(Player * player, float32 x, float32 y, Settings * settings)
 			{
 				float max_force = player->max_speed * player->player_body->GetMass() / (2.0 / settings->hz);
 
-				std::cout << "Max force " << max_force << " real force " << move_impulse_force_buf << std::endl;
 				move_impulse_force_buf = std::min<float>(max_force, move_impulse_force_buf);
-				std::cout << "Result force " << move_impulse_force_buf << std::endl;
 			}
 
 			player->player_body->ApplyForceToCenter(b2Vec2(x * move_impulse_force_buf, y * move_impulse_force_buf), true);

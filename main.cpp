@@ -167,74 +167,6 @@ static void KeyboardSpecial(int key, int x, int y)
 {
 	B2_NOT_USED(x);
 	B2_NOT_USED(y);
-
-	int mod = glutGetModifiers();
-
-	switch (key)
-	{
-		// Press left to pan left.
-	case GLUT_KEY_LEFT:
-		if (mod == GLUT_ACTIVE_CTRL)
-		{
-			b2Vec2 newOrigin(2.0f, 0.0f);
-			test->ShiftOrigin(newOrigin);
-		}
-		else
-		{
-			settings.viewCenter.x -= 0.5f;
-			Resize(width, height);
-		}
-		break;
-
-		// Press right to pan right.
-	case GLUT_KEY_RIGHT:
-		if (mod == GLUT_ACTIVE_CTRL)
-		{
-			b2Vec2 newOrigin(-2.0f, 0.0f);
-			test->ShiftOrigin(newOrigin);
-		}
-		else
-		{
-			settings.viewCenter.x += 0.5f;
-			Resize(width, height);
-		}
-		break;
-
-		// Press down to pan down.
-	case GLUT_KEY_DOWN:
-		if (mod == GLUT_ACTIVE_CTRL)
-		{
-			b2Vec2 newOrigin(0.0f, 2.0f);
-			test->ShiftOrigin(newOrigin);
-		}
-		else
-		{
-			settings.viewCenter.y -= 0.5f;
-			Resize(width, height);
-		}
-		break;
-
-		// Press up to pan up.
-	case GLUT_KEY_UP:
-		if (mod == GLUT_ACTIVE_CTRL)
-		{
-			b2Vec2 newOrigin(0.0f, -2.0f);
-			test->ShiftOrigin(newOrigin);
-		}
-		else
-		{
-			settings.viewCenter.y += 0.5f;
-			Resize(width, height);
-		}
-		break;
-
-		// Press home to reset the view.
-	case GLUT_KEY_HOME:
-		viewZoom = 1.0f;
-		settings.viewCenter.Set(0.0f, 20.0f);
-		Resize(width, height);
-		break;
-	}
 }
 
 static void KeyboardUp(unsigned char key, int x, int y)
@@ -254,38 +186,12 @@ static void Mouse(int32 button, int32 state, int32 x, int32 y)
 	// Use the mouse to move things around.
 	if (button == GLUT_LEFT_BUTTON)
 	{
-		int mod = glutGetModifiers();
 		b2Vec2 p = ConvertScreenToWorld(x, y);
 		if (state == GLUT_DOWN)
-		{
-			b2Vec2 p = ConvertScreenToWorld(x, y);
-			if (mod == GLUT_ACTIVE_SHIFT)
-			{
-				test->ShiftMouseDown(p);
-			}
-			else
-			{
-				test->MouseDown(p);
-			}
-		}
+			test->MouseDown(p);
 
 		if (state == GLUT_UP)
-		{
 			test->MouseUp(p);
-		}
-	}
-	else if (button == GLUT_RIGHT_BUTTON)
-	{
-		if (state == GLUT_DOWN)
-		{
-			lastp = ConvertScreenToWorld(x, y);
-			rMouseDown = true;
-		}
-
-		if (state == GLUT_UP)
-		{
-			rMouseDown = false;
-		}
 	}
 }
 
@@ -300,16 +206,19 @@ void ShowPlayerPanel(Player *player)
         HidePanels();
 
 	player_panel->open();
-        player_radius->set_float_val(test->current_player->player_fixture->GetShape()->m_radius);
-        player_mass->set_float_val(test->current_player->player_body->GetMass());
-        player_move_force->set_float_val(test->current_player->move_impulse_force);
-        player_liner_dumping->set_float_val(test->current_player->player_body->GetLinearDamping());
-        player_player_kick_power->set_float_val(test->current_player->players_kick_power);
-        player_bounce->set_float_val(test->current_player->player_fixture->GetRestitution());
-        player_max_speed->set_float_val(test->current_player->max_speed);
-	player_leg_length->set_float_val(test->current_player->leg_length);
-	player_ball_kick_power->set_float_val(test->current_player->ball_kick_power);
+        player_radius->set_float_val(player->player_fixture->GetShape()->m_radius);
+        player_mass->set_float_val(player->player_body->GetMass());
+        player_move_force->set_float_val(player->move_impulse_force);
+        player_liner_dumping->set_float_val(player->player_body->GetLinearDamping());
+        player_player_kick_power->set_float_val(player->players_kick_power);
+        player_bounce->set_float_val(player->player_fixture->GetRestitution());
+        player_max_speed->set_float_val(player->max_speed);
+	player_leg_length->set_float_val(player->leg_length);
+	player_ball_kick_power->set_float_val(player->ball_kick_power);
 	player_threshold->set_float_val(settings.playerThreshold);
+	player_move_kick_impulse_modifier->set_float_val(player->move_kick_impulse_modifier);
+	player_nitro_additional_max_speed->set_float_val(player->nitro_additional_max_speed);
+	player_nitro_additional_move_force->set_float_val(player->nitro_additional_move_impulse_force);
 
         player_panel->enable();
 }
@@ -326,6 +235,7 @@ void ShowBallPanel(BallBody* ball)
         ball_bounce->set_float_val(test->current_ball->ball_fixture->GetRestitution());
         ball_mass->set_float_val(test->current_ball->body->GetMass());
 	ball_threshold->set_float_val(settings.ballThreshold);
+
 
 
         ball_panel->enable();
@@ -350,7 +260,10 @@ static void UpdatePlayer(int)
                 test->current_player->max_speed = player_max_speed->get_float_val();
 		test->current_player->leg_length = player_leg_length->get_float_val();
 		test->current_player->linearDumping = player_liner_dumping->get_float_val();
+		test->current_player->move_kick_impulse_modifier = player_move_kick_impulse_modifier->get_float_val();
 		settings.playerThreshold = player_threshold->get_float_val();
+		test->current_player->nitro_additional_max_speed = player_nitro_additional_max_speed->get_float_val();
+		test->current_player->nitro_additional_move_impulse_force = player_nitro_additional_move_force->get_float_val();
         }
 }
 
@@ -451,7 +364,10 @@ void ShowCurrentSpeed(float val)
 	last_show_speed += 1/(settings.hz);
 
 	if(last_show_speed >= 0.5)
+	{
 		current_player_ball_speed->set_float_val(val);
+		last_show_speed = 0;
+	}
 }
 
 int main(int argc, char** argv)
@@ -537,6 +453,9 @@ int main(int argc, char** argv)
         add_to_panel(player_panel, &player_radius, "radius", val);
         add_to_panel(player_panel, &player_mass, "mass", val);
         add_to_panel(player_panel, &player_move_force, "move impulse force", val, 1, 100000, 1);
+	add_to_panel(player_panel, &player_nitro_additional_move_force, "nitro add move force", val, 1, 100000, 1);
+	add_to_panel(player_panel, &player_nitro_additional_max_speed, "nitro add max speed", val, 1, 100000, 1);
+	add_to_panel(player_panel, &player_move_kick_impulse_modifier, "move kick modifier", val);
         add_to_panel(player_panel, &player_liner_dumping, "velocity dumping", val);
         add_to_panel(player_panel, &player_player_kick_power, "player kick power", val, 1, 100000, 1);
 	add_to_panel(player_panel, &player_ball_kick_power, "ball kick power", val, 1, 100000, 1);

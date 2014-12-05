@@ -284,40 +284,35 @@ public:
 			this->threshold(ball.body, settings->ballThreshold);
 	}
 
-	void make_kick()
-	{
-
-	}
-
 	void move(Settings *settings)
 	{
 		b2Vec2 direction(0,0);
+		bool nitroKey = false;
 
 		if(keyStates['w'] || keyStates['W'] || keyStates[72])
 		{
-			//std::cout << "Up ";
 			direction.y += 1;
 		}
 
 		if(keyStates['s'] || keyStates['S'] || keyStates[80])
 		{
-			//std::cout << "Down ";
 			direction.y -= 1;
 		}
 		if(keyStates['a'] || keyStates['A'] || keyStates[75])
 		{
-			//std::cout << "Left ";
 			direction.x -= 1;
 		}
 		if(keyStates['d'] || keyStates['D'] || keyStates[77])
 		{
-			//std::cout << "Right ";
 			direction.x += 1;
 		}
 
+		if(keyStates['<'] || keyStates['>'] || keyStates[','] || keyStates['.'])
+			nitroKey = true;
+
 		direction.Normalize();
 
-		Test::Move(test->current_player, direction.x, direction.y, settings);
+		Test::Move(test->current_player, direction.x, direction.y, settings, nitroKey);
 	}
 
 };

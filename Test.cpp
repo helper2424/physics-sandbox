@@ -544,7 +544,7 @@ void Test::kick(b2Body * kicker, b2Body *kickable, float kick_power)
 	std::cout << "Result power " << forceVec2.x << " " << forceVec2.y << std::endl;
 }
 
-void Test::Move(Player * player, float32 x, float32 y, Settings * settings)
+void Test::Move(Player * player, float32 x, float32 y, Settings * settings, bool nitroFlag)
 {
 	if (player != nullptr && (x != 0 || y != 0))
 	{
@@ -555,6 +555,7 @@ void Test::Move(Player * player, float32 x, float32 y, Settings * settings)
 
 		if (settings->forceToMove)
 		{
+			/*
 			float move_impulse_force_buf = player->move_impulse_force;
 
 			if(settings->useSpeedLimit)
@@ -565,17 +566,36 @@ void Test::Move(Player * player, float32 x, float32 y, Settings * settings)
 			}
 
 			player->player_body->ApplyForceToCenter(b2Vec2(x * move_impulse_force_buf, y * move_impulse_force_buf), true);
+			 */
 		}
 		else
 		{
-			player->player_body->ApplyLinearImpulse(b2Vec2(x * player->move_impulse_force, y * player->move_impulse_force), player->player_body->GetPosition(), true);
+			float move_impulse_force = player->move_impulse_force;
+
+			if(nitroFlag)
+				move_impulse_force += player->nitro_additional_move_impulse_force;
+
+			if(player->pressKey && !player->wasKick)
+			{
+				move_impulse_force *= player->move_kick_impulse_modifier;
+			}
+
+			player->player_body->ApplyLinearImpulse(b2Vec2(x * move_impulse_force, y * move_impulse_force), player->player_body->GetPosition(), true);
 		}
 
 		if(settings->useSpeedLimit && player->player_body->GetLinearVelocity().LengthSquared() > player->max_speed * player->max_speed)
 		{
+			float buf_max_speed = player->max_speed;
 			b2Vec2 buf = player->player_body->GetLinearVelocity();
 			buf.Normalize();
-			buf *= player->max_speed;
+
+			if(nitroFlag)
+				buf_max_speed += player->nitro_additional_max_speed;
+
+			if(player->pressKey && !player->wasKick)
+				buf_max_speed *= player->move_kick_impulse_modifier;
+
+			buf *= buf_max_speed;
 
 			player->player_body->SetLinearVelocity(buf);
 		}

@@ -139,13 +139,16 @@ public:
 	b2Fixture * player_fixture;
 
 	float move_impulse_force = 20;
+	float nitro_additional_move_impulse_force = 10;
 	float players_kick_power = 100;
 	float ball_kick_power = 100;
 	float max_speed = 30;
+	float nitro_additional_max_speed = 10;
 	float leg_length = 0.2;
 	float linearDumping;
 	bool pressKey = false;
 	bool wasKick = false;
+	float move_kick_impulse_modifier = 0.8;
 };
 const int32 k_maxContactPoints = 2048;
 
@@ -201,7 +204,7 @@ public:
 
 	void ShiftOrigin(const b2Vec2& newOrigin);
 	void SetCurrentPlayer(Player * player);
-	void Move(Player*,float32 x, float32 y, Settings*);
+	void Move(Player*,float32 x, float32 y, Settings*, bool);
 
 	friend class DestructionListener;
 	friend class BoundaryListener;

@@ -79,7 +79,7 @@ struct Settings
 		enableSleep = 1;
 		pause = 0;
 		singleStep = 0;
-		forceToMove = 1;
+		forceToMove = 0;
 		useSpeedLimit = 1;
 		playerThreshold = 0.1;
 		ballThreshold = 0.1;

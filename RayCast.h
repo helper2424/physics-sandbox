@@ -248,13 +248,13 @@ public:
 		Test::kick(test->current_player);
 	}
 
-	void Step(Settings* settings)
+	void Step(Settings* settings, double delay)
 	{
-		Test::Step(settings);
+		Test::Step(settings, delay);
 
 		if(this->current_player != nullptr)
 		{
-			this->move(settings);
+			this->move(settings, delay);
 			this->kick();
 			b2Color current_player_color;
 			current_player_color.b = 1;
@@ -284,7 +284,7 @@ public:
 			this->threshold(ball.body, settings->ballThreshold);
 	}
 
-	void move(Settings *settings)
+	void move(Settings *settings, double delay)
 	{
 		b2Vec2 direction(0,0);
 		bool nitroKey = false;
@@ -312,7 +312,7 @@ public:
 
 		direction.Normalize();
 
-		Test::Move(test->current_player, direction.x, direction.y, settings, nitroKey);
+		Test::Move(test->current_player, direction.x, direction.y, settings, nitroKey, delay);
 	}
 
 };

@@ -23,6 +23,7 @@
 #include <signal.h>
 #include <stdlib.h>
 #include "Raycast.h"
+#include <sys/time.h>
 
 #include <stdio.h>
 
@@ -79,8 +80,22 @@ static void SimulationLoop()
 	glLoadIdentity();
 
 	b2Vec2 oldCenter = settings.viewCenter;
-	settings.hz = settingsHz;
-	test->Step(&settings);
+
+	struct timeval tv;
+	gettimeofday(&tv,NULL);
+
+	double current_seconds = (double)tv.tv_sec;
+	double current_milliseconds = (double)(tv.tv_usec) / 1000;
+
+	current_delay = (current_seconds - seconds_of_last_call) * 1000 + current_milliseconds - milliseconds_of_last_call;
+
+	milliseconds_of_last_call = current_milliseconds;
+	seconds_of_last_call = current_seconds;
+
+	if(current_delay < 0)
+		current_delay += 1000;
+
+	test->Step(&settings, current_delay);
 	if (oldCenter.x != settings.viewCenter.x || oldCenter.y != settings.viewCenter.y)
 	{
 		Resize(width, height);
@@ -361,7 +376,7 @@ void add_to_panel(GLUI_Panel* panel, GLUI_Spinner** spinner, const char * name, 
 
 void ShowCurrentSpeed(float val)
 {
-	last_show_speed += 1/(settings.hz);
+	last_show_speed += current_delay;
 
 	if(last_show_speed >= 0.5)
 	{

@@ -60,7 +60,6 @@ struct Settings
 	Settings()
 	{
 		viewCenter.Set(0.0f, 20.0f);
-		hz = 50.0f;
 		velocityIterations = 8;
 		positionIterations = 3;
 		drawShapes = 1;
@@ -86,7 +85,6 @@ struct Settings
 	}
 
 	b2Vec2 viewCenter;
-	float32 hz;
 	int32 velocityIterations;
 	int32 positionIterations;
 	int32 drawShapes;
@@ -172,7 +170,7 @@ public:
 	virtual ~Test();
 
     void DrawTitle(const char *string);
-	virtual void Step(Settings* settings);
+	virtual void Step(Settings* settings, double );
 	virtual void Keyboard(unsigned char key) { B2_NOT_USED(key); }
 	virtual void KeyboardUp(unsigned char key) { B2_NOT_USED(key); }
 	void ShiftMouseDown(const b2Vec2& p);
@@ -204,7 +202,7 @@ public:
 
 	void ShiftOrigin(const b2Vec2& newOrigin);
 	void SetCurrentPlayer(Player * player);
-	void Move(Player*,float32 x, float32 y, Settings*, bool);
+	void Move(Player*,float32 x, float32 y, Settings*, bool, double);
 
 	friend class DestructionListener;
 	friend class BoundaryListener;

@@ -57,6 +57,9 @@ namespace {
 	GLUI_EditText *current_player_ball_speed;
 
 	float last_show_speed = 0;
+	double milliseconds_of_last_call = 0;
+	double seconds_of_last_call = 0;
+	double current_delay = 0;
 }
 
 void ShowPlayerPanel(Player *);

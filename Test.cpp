@@ -309,24 +309,9 @@ void Test::LaunchBomb(const b2Vec2& position, const b2Vec2& velocity)
 	m_bomb->CreateFixture(&fd);
 }
 
-void Test::Step(Settings* settings)
+void Test::Step(Settings* settings, double current_delay)
 {
-	float32 timeStep = settings->hz > 0.0f ? 1.0f / settings->hz : float32(0.0f);
-
-	if (settings->pause)
-	{
-		if (settings->singleStep)
-		{
-			settings->singleStep = 0;
-		}
-		else
-		{
-			timeStep = 0.0f;
-		}
-
-		m_debugDraw.DrawString(5, m_textLine, "****PAUSED****");
-		m_textLine += DRAW_STRING_NEW_LINE;
-	}
+	double timeStep = current_delay/ 1000;
 
 	uint32 flags = 0;
 	flags += settings->drawShapes * b2Draw::e_shapeBit;
@@ -544,7 +529,7 @@ void Test::kick(b2Body * kicker, b2Body *kickable, float kick_power)
 	std::cout << "Result power " << forceVec2.x << " " << forceVec2.y << std::endl;
 }
 
-void Test::Move(Player * player, float32 x, float32 y, Settings * settings, bool nitroFlag)
+void Test::Move(Player * player, float32 x, float32 y, Settings * settings, bool nitroFlag, double delay)
 {
 	if (player != nullptr && (x != 0 || y != 0))
 	{
@@ -580,6 +565,7 @@ void Test::Move(Player * player, float32 x, float32 y, Settings * settings, bool
 				move_impulse_force *= player->move_kick_impulse_modifier;
 			}
 
+			move_impulse_force *= (delay / 1000);
 			player->player_body->ApplyLinearImpulse(b2Vec2(x * move_impulse_force, y * move_impulse_force), player->player_body->GetPosition(), true);
 		}
 

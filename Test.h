@@ -27,6 +27,7 @@
 #include <stdlib.h>
 #include <vector>
 #include <list>
+#include <unordered_set>
 
 class Test;
 struct Settings;
@@ -82,6 +83,7 @@ struct Settings
 		useSpeedLimit = 1;
 		playerThreshold = 0.1;
 		ballThreshold = 0.1;
+		static_camera = 0;
 	}
 
 	b2Vec2 viewCenter;
@@ -108,6 +110,7 @@ struct Settings
 	int32 isMoveLinearDamping;
 	float playerThreshold;
 	float ballThreshold;
+	int32 static_camera;
 };
 
 struct TestEntry
@@ -147,6 +150,8 @@ public:
 	bool pressKey = false;
 	bool wasKick = false;
 	float move_kick_impulse_modifier = 0.8;
+	float teleport_length = 2;
+	bool was_teleport = false;
 };
 const int32 k_maxContactPoints = 2048;
 
@@ -182,6 +187,7 @@ public:
 	void LaunchBomb(const b2Vec2& position, const b2Vec2& velocity);
 	void kick(Player *);
 	void kick(b2Body * kicker, b2Body *kickable, float kick_power);
+	void teleport(Player *);
 	void threshold(b2Body * body, float limit);
 
 	void SpawnBomb(const b2Vec2& worldPt);
@@ -203,6 +209,8 @@ public:
 	void ShiftOrigin(const b2Vec2& newOrigin);
 	void SetCurrentPlayer(Player * player);
 	void Move(Player*,float32 x, float32 y, Settings*, bool, double);
+	void check_inner_map(b2Body *body, float);
+	bool dot_in_box(const b2Vec2&, const b2Vec2&, const b2Vec2&);
 
 	friend class DestructionListener;
 	friend class BoundaryListener;
@@ -222,6 +230,10 @@ public:
 	bool m_bombSpawning;
 	b2Vec2 m_mouseWorld;
 	int32 m_stepCount;
+
+	Map *map;
+
+	b2Fixture *map_borders_fixture;
 
 	b2Profile m_maxProfile;
 	b2Profile m_totalProfile;

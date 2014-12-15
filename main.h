@@ -45,6 +45,8 @@ namespace {
 	GLUI_Spinner* player_move_kick_impulse_modifier;
 	GLUI_Spinner* player_nitro_additional_move_force;
 	GLUI_Spinner* player_nitro_additional_max_speed;
+	GLUI_Spinner* player_teleport_length;
+	GLUI_Spinner* player_angular_damping;
 
 	GLUI_Rollout *ball_panel;
 	GLUI_Spinner* ball_radius;
@@ -53,6 +55,7 @@ namespace {
 	GLUI_Spinner* ball_angular_dumping;
 	GLUI_Spinner* ball_bounce;
 	GLUI_Spinner* ball_threshold;
+	GLUI_Spinner* ball_angular_damping;
 
 	GLUI_EditText *current_player_ball_speed;
 

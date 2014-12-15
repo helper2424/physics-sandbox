@@ -309,6 +309,46 @@ void Test::LaunchBomb(const b2Vec2& position, const b2Vec2& velocity)
 	m_bomb->CreateFixture(&fd);
 }
 
+void Test::check_inner_map(b2Body *body, float radius)
+{
+	if(this->map_borders_fixture != nullptr && !this->dot_in_box(body->GetPosition(), b2Vec2(0,0), b2Vec2(this->map->width, this->map->height)))
+	{
+		b2Vec2 position = body->GetPosition();
+
+		if(position.x < 0)
+			position.x = radius;
+
+		if(position.y < 0)
+			position.y = radius;
+
+		if(position.x > this->map->width)
+			position.x = this->map->width - radius;
+
+		if(position.y > this->map->height)
+			position.y = this->map->height - radius;
+
+		body->SetTransform(position, body->GetAngle());
+	}
+}
+
+bool Test::dot_in_box(const b2Vec2 &dot, const b2Vec2 &left_bottom, const b2Vec2 &right_top)
+{
+	return dot.x > left_bottom.x && dot.x < right_top.x && dot.y > left_bottom.y && dot.y < right_top.y;
+}
+
+void Test::teleport(Player* player)
+{
+	if(player != nullptr && !player->was_teleport)
+	{
+		b2Vec2 buf = player->player_body->GetLinearVelocity();
+		buf.Normalize();
+		buf *= player->teleport_length;
+
+		player->player_body->SetTransform(player->player_body->GetPosition() + buf, player->player_body->GetAngle());
+		player->was_teleport = true;
+	}
+}
+
 void Test::Step(Settings* settings, double current_delay)
 {
 	double timeStep = current_delay/ 1000;

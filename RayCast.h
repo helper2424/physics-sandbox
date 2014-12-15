@@ -47,6 +47,7 @@ public:
 
 	RayCast(Map *map)
 	{
+		this->map = map;
 		std::cout << "End creating objects" << std::endl;
 
 		pickable_definition.active = true;
@@ -209,7 +210,8 @@ public:
 
 		chain.CreateLoop(vs, 4);
 
-		map_body->CreateFixture(&chain, 0)->SetFilterData(player_ball_collide_filter);
+		this->map_borders_fixture = map_body->CreateFixture(&chain, 0);
+		this->map_borders_fixture->SetFilterData(player_ball_collide_filter);
 	}
 
 	void DestroyBody()
@@ -256,6 +258,7 @@ public:
 		{
 			this->move(settings, delay);
 			this->kick();
+			this->teleport();
 			b2Color current_player_color;
 			current_player_color.b = 1;
 			current_player_color.r = 1;
@@ -263,6 +266,7 @@ public:
 			this->m_debugDraw.DrawCircle(this->current_player->player_body->GetPosition(), 0.5, current_player_color);
 
 			ShowCurrentSpeed(this->current_player->player_body->GetLinearVelocity().Length());
+			settings->viewCenter = this->current_player->player_body->GetPosition();
 		}
 
 		if(this->current_ball != nullptr)
@@ -274,7 +278,10 @@ public:
 			this->m_debugDraw.DrawCircle(this->current_ball->body->GetPosition(), 0.3, current_ball_color);
 
 			if(this->current_player == nullptr)
+			{
 				ShowCurrentSpeed(this->current_ball->body->GetLinearVelocity().Length());
+				settings->viewCenter = this->current_ball->body->GetPosition();
+			}
 		}
 
 		for(auto player : this->players)
@@ -282,6 +289,21 @@ public:
 
 		for(auto ball : this->balls)
 			this->threshold(ball.body, settings->ballThreshold);
+
+		if(this->current_player)
+			this->check_inner_map(this->current_player->player_body, this->current_player->player_fixture->GetShape()->m_radius);
+
+
+	}
+
+	void teleport()
+	{
+		if(keyStates['1'])
+		{
+			Test::teleport(this->current_player);
+		}
+		else if(this->current_player)
+			this->current_player->was_teleport = false;
 	}
 
 	void move(Settings *settings, double delay)

@@ -26,7 +26,6 @@
 #include <sys/time.h>
 
 #include <stdio.h>
-
 static void Resize(int32 w, int32 h)
 {
         if(map != nullptr)
@@ -39,17 +38,14 @@ static void Resize(int32 w, int32 h)
 
                 glMatrixMode(GL_PROJECTION);
                 glLoadIdentity();
-                float32 ratio = float32(tw) / float32(th);
-
-                b2Vec2 extents(ratio * UnitToPixel, UnitToPixel);
-                extents *= viewZoom;
-
-                b2Vec2 lower = settings.viewCenter - extents;
-                b2Vec2 upper = settings.viewCenter + extents;
 
                 float32 convertCoeff = viewZoom * UnitToPixel;
-                // L/R/B/T
-                gluOrtho2D(-2, tw/convertCoeff -2, (map->height + 2) - (th/convertCoeff), (map->height + 2));
+
+		if(settings.static_camera)
+			gluOrtho2D(0, tw/convertCoeff, (map->height) - (th/convertCoeff), (map->height));
+		else
+			// L/R/B/T
+			gluOrtho2D(settings.viewCenter.x - tw/(2*convertCoeff) , settings.viewCenter.x + tw/(2*convertCoeff), settings.viewCenter.y - th/(2*convertCoeff), settings.viewCenter.y + th/(2*convertCoeff));
         }
 }
 
@@ -58,8 +54,17 @@ static b2Vec2 ConvertScreenToWorld(int32 x, int32 y)
         float32 convertCoeff = viewZoom * UnitToPixel;
 
 	b2Vec2 p;
-	p.x = x/convertCoeff -2;
-	p.y = map->height + 2 - y/convertCoeff;
+
+	if(!settings.static_camera)
+	{
+		p.x = settings.viewCenter.x - tw/(2*convertCoeff) + x/convertCoeff;
+		p.y = settings.viewCenter.y + th/(2*convertCoeff) - y/convertCoeff;
+	}
+	else
+	{
+		p.x = x/convertCoeff -2;
+		p.y = map->height + 2 - y/convertCoeff;
+	}
 
 	return p;
 }
@@ -234,6 +239,8 @@ void ShowPlayerPanel(Player *player)
 	player_move_kick_impulse_modifier->set_float_val(player->move_kick_impulse_modifier);
 	player_nitro_additional_max_speed->set_float_val(player->nitro_additional_max_speed);
 	player_nitro_additional_move_force->set_float_val(player->nitro_additional_move_impulse_force);
+	player_teleport_length->set_float_val(player->teleport_length);
+	player_angular_damping->set_float_val(player->player_body->GetAngularDamping());
 
         player_panel->enable();
 }
@@ -244,14 +251,13 @@ void ShowBallPanel(BallBody* ball)
 
 	ball_panel->open();
 
-        ball_radius->set_float_val(test->current_ball->ball_fixture->GetShape()->m_radius);
-	ball_liner_dumping->set_float_val(test->current_ball->body->GetLinearDamping());
-	ball_angular_dumping->set_float_val(test->current_ball->body->GetAngularDamping());
-        ball_bounce->set_float_val(test->current_ball->ball_fixture->GetRestitution());
-        ball_mass->set_float_val(test->current_ball->body->GetMass());
+        ball_radius->set_float_val(ball->ball_fixture->GetShape()->m_radius);
+	ball_liner_dumping->set_float_val(ball->body->GetLinearDamping());
+	ball_angular_dumping->set_float_val(ball->body->GetAngularDamping());
+        ball_bounce->set_float_val(ball->ball_fixture->GetRestitution());
+        ball_mass->set_float_val(ball->body->GetMass());
 	ball_threshold->set_float_val(settings.ballThreshold);
-
-
+	ball_angular_damping->set_float_val(ball->body->GetAngularDamping());
 
         ball_panel->enable();
 }
@@ -279,7 +285,9 @@ static void UpdatePlayer(int)
 		settings.playerThreshold = player_threshold->get_float_val();
 		test->current_player->nitro_additional_max_speed = player_nitro_additional_max_speed->get_float_val();
 		test->current_player->nitro_additional_move_impulse_force = player_nitro_additional_move_force->get_float_val();
-        }
+		test->current_player->teleport_length = player_teleport_length->get_float_val();
+		test->current_player->player_body->SetAngularDamping(player_angular_damping->get_float_val());
+	}
 }
 
 static void UpdateBall(int)
@@ -296,6 +304,8 @@ static void UpdateBall(int)
                 buf.mass = ball_mass->get_float_val();
                 test->current_ball->body->SetMassData(&buf);
 		settings.ballThreshold = ball_threshold->get_float_val();
+
+		test->current_ball->body->SetAngularDamping(ball_angular_damping->get_float_val());
         }
 }
 
@@ -400,6 +410,8 @@ int main(int argc, char** argv)
         load_map("./map.json");
 	test = new RayCast(map);
 
+	settings.viewCenter = b2Vec2(float(map->width) / 2, float(map->height) / 2);
+
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
 	glutInitWindowSize(width, height);
@@ -444,9 +456,10 @@ int main(int argc, char** argv)
 	//glui->add_separator();
 
 	GLUI_Panel* drawPanel =	glui->add_panel("Draw");
-        glui->add_checkbox_to_panel(drawPanel, "Moving with force", &settings.forceToMove);
-        glui->add_checkbox_to_panel(drawPanel, "Limit velocity", &settings.useSpeedLimit);
-	glui->add_checkbox_to_panel(drawPanel, "Damping speed when move",&settings.isMoveLinearDamping);
+        //glui->add_checkbox_to_panel(drawPanel, "Moving with force", &settings.forceToMove);
+        //glui->add_checkbox_to_panel(drawPanel, "Limit velocity", &settings.useSpeedLimit);
+	//glui->add_checkbox_to_panel(drawPanel, "Damping speed when move",&settings.isMoveLinearDamping);
+	glui->add_checkbox_to_panel(drawPanel, "Static camera", &settings.static_camera);
 	//glui->add_checkbox_to_panel(drawPanel, "Contact Normals", &settings.drawContactNormals);
 	//glui->add_checkbox_to_panel(drawPanel, "Contact Impulses", &settings.drawContactImpulse);
 	//glui->add_checkbox_to_panel(drawPanel, "Friction Impulses", &settings.drawFrictionImpulse);
@@ -458,7 +471,7 @@ int main(int argc, char** argv)
 	glui->add_button("Single Step", 0, SingleStep);
 	glui->add_button("Restart", 0, Restart);
 
-		void * someval = nullptr;
+	void * someval = nullptr;
 
 	current_player_ball_speed = glui->add_edittext("current speed", GLUI_EDITTEXT_FLOAT, someval);
 
@@ -478,6 +491,8 @@ int main(int argc, char** argv)
         add_to_panel(player_panel, &player_max_speed, "max velocity", val);
 	add_to_panel(player_panel, &player_leg_length, "leg length", val);
 	add_to_panel(player_panel, &player_threshold, "threshold", val);
+	add_to_panel(player_panel, &player_teleport_length, "teleport length", val);
+	add_to_panel(player_panel, &player_angular_damping, "angular damping", val);
 
         glui->add_button_to_panel(player_panel, "Update", 0, UpdatePlayer);
 
@@ -490,6 +505,7 @@ int main(int argc, char** argv)
         add_to_panel(ball_panel, &ball_bounce, "bounce",val);
         add_to_panel(ball_panel, &ball_angular_dumping, "angular dumping", val);
 	add_to_panel(ball_panel, &ball_threshold, "threshold", val);
+	add_to_panel(ball_panel, &ball_angular_damping, "angular damping", val);
 
         glui->add_button_to_panel(ball_panel, "Update", 0, UpdateBall);
 

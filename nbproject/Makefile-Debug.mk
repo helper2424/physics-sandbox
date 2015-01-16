@@ -57,17 +57,17 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=-L/usr/X11/lib ../../Downloads/Box2D_v2.3.0/Box2D/Build/Box2D/libBox2D.a ../../Downloads/Box2D_v2.3.0/Box2D/Build/freeglut/libfreeglut_static.a ../../Downloads/Box2D_v2.3.0/Box2D/Build/glui/libglui.a
+LDLIBSOPTIONS=-L/usr/X11/lib box2d/freeglut/libfreeglut_static.a box2d/glui/libglui.a box2d/Box2D/libBox2D.a
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
 	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/megaphysics
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/megaphysics: ../../Downloads/Box2D_v2.3.0/Box2D/Build/Box2D/libBox2D.a
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/megaphysics: box2d/freeglut/libfreeglut_static.a
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/megaphysics: ../../Downloads/Box2D_v2.3.0/Box2D/Build/freeglut/libfreeglut_static.a
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/megaphysics: box2d/glui/libglui.a
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/megaphysics: ../../Downloads/Box2D_v2.3.0/Box2D/Build/glui/libglui.a
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/megaphysics: box2d/Box2D/libBox2D.a
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/megaphysics: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
@@ -76,32 +76,32 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/megaphysics: ${OBJECTFILES}
 ${OBJECTDIR}/BallBody.o: BallBody.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -w -I../../Downloads/Box2D_v2.3.0/Box2D -I/usr/local/include/boost -I/usr/local/include/boost -I/usr/local/include -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/BallBody.o BallBody.cpp
+	$(COMPILE.cc) -g -w -I/usr/local/include/boost -I/usr/local/include/boost -I/usr/local/include -Ibox2d/Box2D -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/BallBody.o BallBody.cpp
 
 ${OBJECTDIR}/Map.o: Map.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -w -I../../Downloads/Box2D_v2.3.0/Box2D -I/usr/local/include/boost -I/usr/local/include/boost -I/usr/local/include -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Map.o Map.cpp
+	$(COMPILE.cc) -g -w -I/usr/local/include/boost -I/usr/local/include/boost -I/usr/local/include -Ibox2d/Box2D -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Map.o Map.cpp
 
 ${OBJECTDIR}/Render.o: Render.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -w -I../../Downloads/Box2D_v2.3.0/Box2D -I/usr/local/include/boost -I/usr/local/include/boost -I/usr/local/include -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Render.o Render.cpp
+	$(COMPILE.cc) -g -w -I/usr/local/include/boost -I/usr/local/include/boost -I/usr/local/include -Ibox2d/Box2D -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Render.o Render.cpp
 
 ${OBJECTDIR}/Test.o: Test.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -w -I../../Downloads/Box2D_v2.3.0/Box2D -I/usr/local/include/boost -I/usr/local/include/boost -I/usr/local/include -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Test.o Test.cpp
+	$(COMPILE.cc) -g -w -I/usr/local/include/boost -I/usr/local/include/boost -I/usr/local/include -Ibox2d/Box2D -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Test.o Test.cpp
 
 ${OBJECTDIR}/VoidSerializer.o: VoidSerializer.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -w -I../../Downloads/Box2D_v2.3.0/Box2D -I/usr/local/include/boost -I/usr/local/include/boost -I/usr/local/include -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/VoidSerializer.o VoidSerializer.cpp
+	$(COMPILE.cc) -g -w -I/usr/local/include/boost -I/usr/local/include/boost -I/usr/local/include -Ibox2d/Box2D -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/VoidSerializer.o VoidSerializer.cpp
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -w -I../../Downloads/Box2D_v2.3.0/Box2D -I/usr/local/include/boost -I/usr/local/include/boost -I/usr/local/include -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -g -w -I/usr/local/include/boost -I/usr/local/include/boost -I/usr/local/include -Ibox2d/Box2D -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.cpp
 
 # Subprojects
 .build-subprojects:

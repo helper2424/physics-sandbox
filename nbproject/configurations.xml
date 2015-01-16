@@ -51,10 +51,10 @@
           <architecture>2</architecture>
           <standard>8</standard>
           <incDir>
-            <pElem>../../Downloads/Box2D_v2.3.0/Box2D</pElem>
             <pElem>/usr/local/include/boost</pElem>
             <pElem>/usr/local/include/boost</pElem>
             <pElem>/usr/local/include</pElem>
+            <pElem>box2d/Box2D</pElem>
           </incDir>
           <warningLevel>0</warningLevel>
         </ccTool>
@@ -63,9 +63,9 @@
             <pElem>/usr/X11/lib</pElem>
           </linkerAddLib>
           <linkerLibItems>
-            <linkerLibFileItem>../../Downloads/Box2D_v2.3.0/Box2D/Build/Box2D/libBox2D.a</linkerLibFileItem>
-            <linkerLibFileItem>../../Downloads/Box2D_v2.3.0/Box2D/Build/freeglut/libfreeglut_static.a</linkerLibFileItem>
-            <linkerLibFileItem>../../Downloads/Box2D_v2.3.0/Box2D/Build/glui/libglui.a</linkerLibFileItem>
+            <linkerLibFileItem>box2d/freeglut/libfreeglut_static.a</linkerLibFileItem>
+            <linkerLibFileItem>box2d/glui/libglui.a</linkerLibFileItem>
+            <linkerLibFileItem>box2d/Box2D/libBox2D.a</linkerLibFileItem>
           </linkerLibItems>
           <commandLine>-Wdeprecated-declarations -lGL -lGLUT -lGLU -lX11</commandLine>
         </linkerTool>

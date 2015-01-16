@@ -1,12 +1,12 @@
 build/Debug/GNU-MacOSX/Map.o: Map.cpp Map.h \
-  ../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Collision/Shapes/b2CircleShape.h \
-  ../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Collision/Shapes/b2Shape.h \
-  ../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Common/b2BlockAllocator.h \
-  ../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Common/b2Settings.h \
-  ../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Common/b2Math.h \
-  ../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Collision/b2Collision.h \
-  ../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Collision/Shapes/b2PolygonShape.h \
-  ../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Collision/Shapes/b2EdgeShape.h \
+  /usr/local/include/Box2D/Collision/Shapes/b2CircleShape.h \
+  /usr/local/include/Box2D/Collision/Shapes/b2Shape.h \
+  /usr/local/include/Box2D/Common/b2BlockAllocator.h \
+  /usr/local/include/Box2D/Common/b2Settings.h \
+  /usr/local/include/Box2D/Common/b2Math.h \
+  /usr/local/include/Box2D/Collision/b2Collision.h \
+  /usr/local/include/Box2D/Collision/Shapes/b2PolygonShape.h \
+  /usr/local/include/Box2D/Collision/Shapes/b2EdgeShape.h \
   /usr/local/include/boost/property_tree/ptree.hpp \
   /usr/local/include/boost/property_tree/ptree_fwd.hpp \
   /usr/local/include/boost/config.hpp \
@@ -883,21 +883,21 @@ build/Debug/GNU-MacOSX/Map.o: Map.cpp Map.h \
 
 Map.h:
 
-../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Collision/Shapes/b2CircleShape.h:
+/usr/local/include/Box2D/Collision/Shapes/b2CircleShape.h:
 
-../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Collision/Shapes/b2Shape.h:
+/usr/local/include/Box2D/Collision/Shapes/b2Shape.h:
 
-../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Common/b2BlockAllocator.h:
+/usr/local/include/Box2D/Common/b2BlockAllocator.h:
 
-../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Common/b2Settings.h:
+/usr/local/include/Box2D/Common/b2Settings.h:
 
-../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Common/b2Math.h:
+/usr/local/include/Box2D/Common/b2Math.h:
 
-../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Collision/b2Collision.h:
+/usr/local/include/Box2D/Collision/b2Collision.h:
 
-../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Collision/Shapes/b2PolygonShape.h:
+/usr/local/include/Box2D/Collision/Shapes/b2PolygonShape.h:
 
-../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Collision/Shapes/b2EdgeShape.h:
+/usr/local/include/Box2D/Collision/Shapes/b2EdgeShape.h:
 
 /usr/local/include/boost/property_tree/ptree.hpp:
 

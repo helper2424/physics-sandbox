@@ -66,6 +66,28 @@ Test::~Test()
 	m_world = NULL;
 }
 
+void Test::BeginContact(b2Contact* contact)
+{
+	b2Fixture *fixture_a = contact->GetFixtureA();
+	b2Fixture *fixture_b = contact->GetFixtureB();
+
+	VoidSerializer *a_object = dynamic_cast<VoidSerializer*>(static_cast<VoidSerializer*>(fixture_a->GetUserData()));
+        VoidSerializer *b_object = dynamic_cast<VoidSerializer*>(static_cast<VoidSerializer*>(fixture_b->GetUserData()));
+
+        if(a_object == nullptr || b_object == nullptr)
+	{
+		std::cout << "objects is nullptr" << std::endl;
+                return;
+	}
+
+	if(a_object->get_serialize_class() == VoidSerializer::SERIALIZE_CLASS_BALL && b_object->get_serialize_class() == VoidSerializer::SERIALIZE_CLASS_CLIENT ||
+		b_object->get_serialize_class() == VoidSerializer::SERIALIZE_CLASS_BALL && a_object->get_serialize_class() == VoidSerializer::SERIALIZE_CLASS_CLIENT)
+	{
+		contact->SetRestitution(0);
+	}
+	
+}
+
 void Test::PreSolve(b2Contact* contact, const b2Manifold* oldManifold)
 {
 	const b2Manifold* manifold = contact->GetManifold();
@@ -82,6 +104,21 @@ void Test::PreSolve(b2Contact* contact, const b2Manifold* oldManifold)
 	b2GetPointStates(state1, state2, oldManifold, manifold);
 
 	b2WorldManifold worldManifold;
+	// <block for server>
+
+	/*
+        VoidSerializer *a_object = dynamic_cast<VoidSerializer*>(static_cast<VoidSerializer*>(fixtureA->GetUserData()));
+        VoidSerializer *b_object = dynamic_cast<VoidSerializer*>(static_cast<VoidSerializer*>(fixtureB->GetUserData())
+
+	if(a_object != nullptr && b_object != nullptr && (a_object->get_serialize_class() == VoidSerializer::SERIALIZE_CLASS_BALL && b_object->get_serialize_class() == VoidSerializer::SERIALIZE_CLASS_CLIENT ||
+		b_object->get_serialize_class() == VoidSerializer::SERIALIZE_CLASS_BALL && a_object->get_serialize_class() == VoidSerializer::SERIALIZE_CLASS_CLIENT))
+	{
+		std::cout << "set contact to 0" << std::endl;
+		contact->SetRestitution(0);
+	}
+	 * */
+	// </block for server>
+
 	contact->GetWorldManifold(&worldManifold);
 
 	for (int32 i = 0; i < manifold->pointCount && m_pointCount < k_maxContactPoints; ++i)

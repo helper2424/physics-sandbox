@@ -62,8 +62,8 @@ static b2Vec2 ConvertScreenToWorld(int32 x, int32 y)
 	}
 	else
 	{
-		p.x = x/convertCoeff -2;
-		p.y = map->height + 2 - y/convertCoeff;
+		p.x = x/convertCoeff;
+		p.y = map->height - y/convertCoeff;
 	}
 
 	return p;

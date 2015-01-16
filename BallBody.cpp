@@ -12,6 +12,7 @@ BallBody::BallBody (b2World *world, const MapBall& map_ball, const b2BodyDef& ba
     this->ball_fixture->SetFilterData(ball_filter);
     //ball_fixture->SetFriction(map_ball.friction);
     this->ball_fixture->SetRestitution(map_ball.bounce);
+    this->ball_fixture->SetUserData(this);
 
     b2MassData mass_data;
     this->body->GetMassData(&mass_data);

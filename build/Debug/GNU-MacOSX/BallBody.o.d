@@ -1,14 +1,14 @@
 build/Debug/GNU-MacOSX/BallBody.o: BallBody.cpp BallBody.h \
-  ../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Dynamics/b2Body.h \
-  ../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Common/b2Math.h \
-  ../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Common/b2Settings.h \
-  ../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Collision/Shapes/b2Shape.h \
-  ../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Common/b2BlockAllocator.h \
-  ../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Collision/b2Collision.h \
-  ../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Dynamics/b2Fixture.h Map.h \
-  ../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Collision/Shapes/b2CircleShape.h \
-  ../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Collision/Shapes/b2PolygonShape.h \
-  ../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Collision/Shapes/b2EdgeShape.h \
+  /usr/local/include/Box2D/Dynamics/b2Body.h \
+  /usr/local/include/Box2D/Common/b2Math.h \
+  /usr/local/include/Box2D/Common/b2Settings.h \
+  /usr/local/include/Box2D/Collision/Shapes/b2Shape.h \
+  /usr/local/include/Box2D/Common/b2BlockAllocator.h \
+  /usr/local/include/Box2D/Collision/b2Collision.h \
+  /usr/local/include/Box2D/Dynamics/b2Fixture.h Map.h \
+  /usr/local/include/Box2D/Collision/Shapes/b2CircleShape.h \
+  /usr/local/include/Box2D/Collision/Shapes/b2PolygonShape.h \
+  /usr/local/include/Box2D/Collision/Shapes/b2EdgeShape.h \
   /usr/local/include/boost/property_tree/ptree.hpp \
   /usr/local/include/boost/property_tree/ptree_fwd.hpp \
   /usr/local/include/boost/config.hpp \
@@ -583,39 +583,38 @@ build/Debug/GNU-MacOSX/BallBody.o: BallBody.cpp BallBody.h \
   /usr/local/include/boost/multi_index/detail/duplicates_iterator.hpp \
   /usr/local/include/boost/multi_index/member.hpp \
   /usr/local/include/boost/property_tree/detail/ptree_implementation.hpp \
-  VoidSerializer.h \
-  ../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Dynamics/b2World.h \
-  ../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Common/b2StackAllocator.h \
-  ../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Dynamics/b2ContactManager.h \
-  ../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Collision/b2BroadPhase.h \
-  ../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Collision/b2DynamicTree.h \
-  ../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Common/b2GrowableStack.h \
-  ../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Dynamics/b2WorldCallbacks.h \
-  ../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Dynamics/b2TimeStep.h
+  VoidSerializer.h /usr/local/include/Box2D/Dynamics/b2World.h \
+  /usr/local/include/Box2D/Common/b2StackAllocator.h \
+  /usr/local/include/Box2D/Dynamics/b2ContactManager.h \
+  /usr/local/include/Box2D/Collision/b2BroadPhase.h \
+  /usr/local/include/Box2D/Collision/b2DynamicTree.h \
+  /usr/local/include/Box2D/Common/b2GrowableStack.h \
+  /usr/local/include/Box2D/Dynamics/b2WorldCallbacks.h \
+  /usr/local/include/Box2D/Dynamics/b2TimeStep.h
 
 BallBody.h:
 
-../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Dynamics/b2Body.h:
+/usr/local/include/Box2D/Dynamics/b2Body.h:
 
-../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Common/b2Math.h:
+/usr/local/include/Box2D/Common/b2Math.h:
 
-../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Common/b2Settings.h:
+/usr/local/include/Box2D/Common/b2Settings.h:
 
-../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Collision/Shapes/b2Shape.h:
+/usr/local/include/Box2D/Collision/Shapes/b2Shape.h:
 
-../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Common/b2BlockAllocator.h:
+/usr/local/include/Box2D/Common/b2BlockAllocator.h:
 
-../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Collision/b2Collision.h:
+/usr/local/include/Box2D/Collision/b2Collision.h:
 
-../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Dynamics/b2Fixture.h:
+/usr/local/include/Box2D/Dynamics/b2Fixture.h:
 
 Map.h:
 
-../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Collision/Shapes/b2CircleShape.h:
+/usr/local/include/Box2D/Collision/Shapes/b2CircleShape.h:
 
-../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Collision/Shapes/b2PolygonShape.h:
+/usr/local/include/Box2D/Collision/Shapes/b2PolygonShape.h:
 
-../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Collision/Shapes/b2EdgeShape.h:
+/usr/local/include/Box2D/Collision/Shapes/b2EdgeShape.h:
 
 /usr/local/include/boost/property_tree/ptree.hpp:
 
@@ -1771,18 +1770,18 @@ Map.h:
 
 VoidSerializer.h:
 
-../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Dynamics/b2World.h:
+/usr/local/include/Box2D/Dynamics/b2World.h:
 
-../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Common/b2StackAllocator.h:
+/usr/local/include/Box2D/Common/b2StackAllocator.h:
 
-../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Dynamics/b2ContactManager.h:
+/usr/local/include/Box2D/Dynamics/b2ContactManager.h:
 
-../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Collision/b2BroadPhase.h:
+/usr/local/include/Box2D/Collision/b2BroadPhase.h:
 
-../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Collision/b2DynamicTree.h:
+/usr/local/include/Box2D/Collision/b2DynamicTree.h:
 
-../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Common/b2GrowableStack.h:
+/usr/local/include/Box2D/Common/b2GrowableStack.h:
 
-../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Dynamics/b2WorldCallbacks.h:
+/usr/local/include/Box2D/Dynamics/b2WorldCallbacks.h:
 
-../../Downloads/Box2D_v2.3.0/Box2D/Box2D/Dynamics/b2TimeStep.h:
+/usr/local/include/Box2D/Dynamics/b2TimeStep.h:

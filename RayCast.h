@@ -182,6 +182,7 @@ public:
 					Player *new_player = new Player();
 					new_player->player_body = player_body;
 					new_player->player_fixture = fixture;
+					fixture->SetUserData(new_player);
 					player_body->SetUserData(new_player);
 
 					b2MassData buf;

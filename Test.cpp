@@ -85,7 +85,7 @@ void Test::BeginContact(b2Contact* contact)
 	{
 		contact->SetRestitution(0);
 	}
-	
+
 }
 
 void Test::PreSolve(b2Contact* contact, const b2Manifold* oldManifold)
@@ -383,6 +383,30 @@ void Test::teleport(Player* player)
 
 		player->player_body->SetTransform(player->player_body->GetPosition() + buf, player->player_body->GetAngle());
 		player->was_teleport = true;
+	}
+}
+
+void Test::push_players(Player *player)
+{
+	if(player != nullptr && !player->was_push_players)
+	{
+		for(auto & player_iter: this->players)
+		{
+			if(player_iter != player)
+			{
+				b2Vec2 push_vector = player_iter->player_body->GetPosition() - player->player_body->GetPosition();
+
+				if(push_vector.LengthSquared() <=  (player->push_players_radius + player_iter->player_fixture->GetShape()->m_radius) * (player->push_players_radius + player_iter->player_fixture->GetShape()->m_radius))
+				{
+					push_vector.Normalize();
+					push_vector *=  player->push_players_power;
+					player_iter->player_body->ApplyForceToCenter(push_vector, true);
+				}
+
+			}
+		}
+
+		player->was_push_players = true;
 	}
 }
 

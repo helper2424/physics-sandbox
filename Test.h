@@ -151,7 +151,10 @@ public:
 	bool wasKick = false;
 	float move_kick_impulse_modifier = 0.8;
 	float teleport_length = 2;
+	float push_players_radius = 3;
+	float push_players_power = 200;
 	bool was_teleport = false;
+	bool was_push_players = false;
 };
 const int32 k_maxContactPoints = 2048;
 
@@ -188,6 +191,7 @@ public:
 	void kick(Player *);
 	void kick(b2Body * kicker, b2Body *kickable, float kick_power);
 	void teleport(Player *);
+	void push_players(Player *);
 	void threshold(b2Body * body, float limit);
 
 	void SpawnBomb(const b2Vec2& worldPt);

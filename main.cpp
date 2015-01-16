@@ -241,6 +241,8 @@ void ShowPlayerPanel(Player *player)
 	player_nitro_additional_move_force->set_float_val(player->nitro_additional_move_impulse_force);
 	player_teleport_length->set_float_val(player->teleport_length);
 	player_angular_damping->set_float_val(player->player_body->GetAngularDamping());
+	player_push_players_power->set_float_val(player->push_players_power);
+	player_push_players_radius->set_float_val(player->push_players_radius);
 
         player_panel->enable();
 }
@@ -287,6 +289,8 @@ static void UpdatePlayer(int)
 		test->current_player->nitro_additional_move_impulse_force = player_nitro_additional_move_force->get_float_val();
 		test->current_player->teleport_length = player_teleport_length->get_float_val();
 		test->current_player->player_body->SetAngularDamping(player_angular_damping->get_float_val());
+		test->current_player->push_players_power = player_push_players_power->get_float_val();
+		test->current_player->push_players_radius = player_push_players_radius->get_float_val();
 	}
 }
 
@@ -493,6 +497,8 @@ int main(int argc, char** argv)
 	add_to_panel(player_panel, &player_threshold, "threshold", val);
 	add_to_panel(player_panel, &player_teleport_length, "teleport length", val);
 	add_to_panel(player_panel, &player_angular_damping, "angular damping", val);
+	add_to_panel(player_panel, &player_push_players_radius, "push player radius", val);
+	add_to_panel(player_panel, &player_push_players_power, "push player force", val);
 
         glui->add_button_to_panel(player_panel, "Update", 0, UpdatePlayer);
 

@@ -47,6 +47,8 @@ namespace {
 	GLUI_Spinner* player_nitro_additional_max_speed;
 	GLUI_Spinner* player_teleport_length;
 	GLUI_Spinner* player_angular_damping;
+	GLUI_Spinner* player_push_players_radius;
+	GLUI_Spinner* player_push_players_power;
 
 	GLUI_Rollout *ball_panel;
 	GLUI_Spinner* ball_radius;

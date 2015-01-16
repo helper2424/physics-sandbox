@@ -260,11 +260,16 @@ public:
 			this->move(settings, delay);
 			this->kick();
 			this->teleport();
+			this->push_players();
 			b2Color current_player_color;
 			current_player_color.b = 1;
 			current_player_color.r = 1;
 			current_player_color.g = 1;
 			this->m_debugDraw.DrawCircle(this->current_player->player_body->GetPosition(), 0.5, current_player_color);
+
+			current_player_color.b = 0;
+			current_player_color.r = 0;
+			this->m_debugDraw.DrawCircle(this->current_player->player_body->GetPosition(), this->current_player->push_players_radius, current_player_color);
 
 			ShowCurrentSpeed(this->current_player->player_body->GetLinearVelocity().Length());
 			settings->viewCenter = this->current_player->player_body->GetPosition();
@@ -305,6 +310,16 @@ public:
 		}
 		else if(this->current_player)
 			this->current_player->was_teleport = false;
+	}
+
+	void push_players()
+	{
+		if(keyStates['2'])
+		{
+			Test::push_players(this->current_player);
+		}
+		else if(this->current_player)
+			this->current_player->was_push_players = false;
 	}
 
 	void move(Settings *settings, double delay)

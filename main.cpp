@@ -462,7 +462,7 @@ int main(int argc, char** argv)
 	GLUI_Panel* drawPanel =	glui->add_panel("Draw");
         //glui->add_checkbox_to_panel(drawPanel, "Moving with force", &settings.forceToMove);
         //glui->add_checkbox_to_panel(drawPanel, "Limit velocity", &settings.useSpeedLimit);
-	//glui->add_checkbox_to_panel(drawPanel, "Damping speed when move",&settings.isMoveLinearDamping);
+	glui->add_checkbox_to_panel(drawPanel, "Damping speed when move",&settings.isMoveLinearDamping);
 	glui->add_checkbox_to_panel(drawPanel, "Static camera", &settings.static_camera);
 	//glui->add_checkbox_to_panel(drawPanel, "Contact Normals", &settings.drawContactNormals);
 	//glui->add_checkbox_to_panel(drawPanel, "Contact Impulses", &settings.drawContactImpulse);
